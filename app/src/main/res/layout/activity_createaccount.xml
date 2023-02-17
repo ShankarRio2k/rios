@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:chainUseRtl="true"
+    tools:context=".views.CreateAccountActivity"
+    tools:ignore="Autofill">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="create_account"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/etEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:hint="email"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/etPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:hint="password"
+        android:inputType="textPassword"
+        android:maxLength="8"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/etConfirmPassword"
+        app:layout_constraintEnd_toEndOf="@id/etEmail"
+        app:layout_constraintStart_toStartOf="@id/etEmail"
+        app:layout_constraintTop_toBottomOf="@id/etEmail" />
+
+    <EditText
+        android:id="@+id/etConfirmPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:hint="confirm_password"
+        android:inputType="textPassword"
+        android:maxLength="8"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/btnCreateAccount"
+        app:layout_constraintEnd_toEndOf="@id/etPassword"
+        app:layout_constraintStart_toStartOf="@id/etPassword"
+        app:layout_constraintTop_toBottomOf="@id/etPassword" />
+
+    <Button
+        android:id="@+id/btnCreateAccount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:text="create_account"
+        app:layout_constraintBottom_toTopOf="@id/btnSignIn2"
+        app:layout_constraintEnd_toEndOf="@id/etConfirmPassword"
+        app:layout_constraintStart_toStartOf="@id/etConfirmPassword"
+        app:layout_constraintTop_toBottomOf="@id/etConfirmPassword" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="or"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnSignIn2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCreateAccount" />
+
+    <Button
+        android:id="@+id/btnSignIn2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:backgroundTint="@color/black"
+        android:text="sign_in"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/btnCreateAccount"
+        app:layout_constraintStart_toStartOf="@id/btnCreateAccount"
+        app:layout_constraintTop_toBottomOf="@id/btnCreateAccount" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

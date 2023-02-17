@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="7dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/userlistimg"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:elevation="6dp"
+            android:padding="0dp"
+            android:src="@drawable/profilepic"
+            app:civ_border_color="#265C83"
+            app:civ_border_overlay="true"
+            app:civ_border_width="3dp">
+
+        </de.hdodenhof.circleimageview.CircleImageView>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/usernlist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="7dp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:text="Shankar Rio"
+                android:textColor="@color/black"
+                android:textSize="19sp"
+                android:textStyle="bold">
+
+            </TextView>
+            <TextView
+                android:id="@+id/receiver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </TextView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+<!--                <TextView-->
+<!--                    android:id="@+id/statusofuser"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="220dp"-->
+<!--                    android:text="Online"-->
+<!--                    android:textColor="@color/teal_700"-->
+<!--                    android:textSize="15sp"></TextView>-->
+
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>
