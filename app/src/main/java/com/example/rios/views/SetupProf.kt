@@ -42,11 +42,12 @@ class SetupProf : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
 
         saveprofile.setOnClickListener {
+            val id = FirebaseFirestore.getInstance().collection("profiles").document().id
             val name = getusername.text.toString()
             val bio = getuserbio.text.toString()
             val profilePic  = ""
 //            if (firebaseAuth.currentUser.isAnonymous)
-            saveProfileData(name, bio , profilePic)
+            saveProfileData(id, name, bio , profilePic)
         }
         circularImageView.setOnClickListener{
             val pickImageIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -64,8 +65,10 @@ class SetupProf : AppCompatActivity() {
         }
     }
 
-    private fun saveProfileData(name: String, bio: String,profilePic: String) {
+    private fun saveProfileData(id: String,name: String, bio: String,profilePic: String) {
+        val id = FirebaseFirestore.getInstance().collection("profiles").document().id
         val profileMap = hashMapOf(
+            "id" to id,
             "name" to name,
             "bio" to bio,
             "profilePic" to profilePic
@@ -73,7 +76,7 @@ class SetupProf : AppCompatActivity() {
 
         val storageRef = FirebaseStorage.getInstance().reference
 
-        val imageRef = storageRef.child("profiles/${firebaseAuth.uid}/profilePic")
+        val imageRef = storageRef.child("profiles/${id}/profilePic")
 
         if (_imageUri.value != null) {
             imageRef.putFile(_imageUri.value!!)

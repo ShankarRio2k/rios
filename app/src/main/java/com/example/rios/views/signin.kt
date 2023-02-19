@@ -37,7 +37,7 @@ class signin : AppCompatActivity() {
             firebaseAuth.signInWithEmailAndPassword(signInEmail, signInPassword)
                 .addOnCompleteListener { signIn ->
                     if (signIn.isSuccessful) {
-                        startActivity(Intent(this, MainActivity::class.java))
+                        startActivity(Intent(this, Createaccount::class.java))
                         toast("signed in successfully")
                         finish()
                     } else {
