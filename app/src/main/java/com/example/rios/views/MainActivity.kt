@@ -23,18 +23,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
-
         var viewPager: ViewPager = findViewById(R.id.viewpager)
         var tabLayout: TabLayout = findViewById(R.id.tablayou)
-
             val adapter = MyPagerAdapter(supportFragmentManager)
             viewPager.adapter = adapter
             tabLayout.setupWithViewPager(viewPager)
-
         }
-
         class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-
             private val pages = listOf(
                 Page(R.drawable.ic_baseline_chat_bubble_outline_24,"Talks", talks()),
                 Page(R.drawable.ic_baseline_surfing_24,"surf", surf()),
@@ -50,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                 return page.fragment
             }
 
-            override fun getPageTitle(position: Int): CharSequence? = pages[position].title
+            override fun getPageTitle(position: Int): CharSequence = pages[position].title
 
             override fun getCount(): Int = pages.size
         }
