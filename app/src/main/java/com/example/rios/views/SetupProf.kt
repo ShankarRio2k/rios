@@ -2,6 +2,7 @@ package com.example.rios.views
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
@@ -12,6 +13,7 @@ import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -27,45 +29,44 @@ import java.util.UUID
 
 
 class SetupProf : AppCompatActivity() {
-    private val db = FirebaseFirestore.getInstance()
-    private val TAG = "SetProfile"
-    private val IMAGE_PICK_CODE = 1
-    private val REQUEST_CAMERA = 11
-    private val _imageUri = MutableLiveData<Uri>()
-    val imageUri: LiveData<Uri>
-        get() = _imageUri
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+    private lateinit var _imageUri: MutableLiveData<Uri>
+
+    private val imagePickerLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                circularImageView.setImageURI(uri)
+                _imageUri.value = uri
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setup_prof)
 
         firebaseAuth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+        _imageUri = MutableLiveData()
+        val firebaseAuth = FirebaseAuth.getInstance()
 
         saveprofile.setOnClickListener {
-            val id = FirebaseFirestore.getInstance().collection("profiles").document().id
+            val id = firebaseAuth.currentUser?.uid
             val name = getusername.text.toString()
             val bio = getuserbio.text.toString()
-            val profilePic  = ""
-//            if (firebaseAuth.currentUser.isAnonymous)
-            saveProfileData(id, name, bio , profilePic)
-        }
-        circularImageView.setOnClickListener{
-            val pickImageIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(pickImageIntent, IMAGE_PICK_CODE)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
-            data?.data?.let { uri ->
-                circularImageView.setImageURI(uri)
-                _imageUri.value = uri
+            val profilePic = ""
+//        if (firebaseAuth.currentUser.isAnonymous)
+            if (id != null) {
+                saveProfileData(id, name, bio, profilePic)
             }
         }
+
+        circularImageView.setOnClickListener {
+            imagePickerLauncher.launch("image/*")
+        }
     }
 
-    private fun saveProfileData(id: String,name: String, bio: String,profilePic: String) {
+    private fun saveProfileData(id: String, name: String, bio: String, profilePic: String) {
         val id = FirebaseFirestore.getInstance().collection("profiles").document().id
         val profileMap = hashMapOf(
             "id" to id,
@@ -109,7 +110,4 @@ class SetupProf : AppCompatActivity() {
                 Log.w(TAG, "Error adding profile data", exception)
             }
     }
-
 }
-
-
