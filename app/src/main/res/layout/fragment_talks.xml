@@ -1,32 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/inner_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
-    <LinearLayout
-        android:id="@+id/inner_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="0dp">
+    android:layout_height="match_parent">
 
-        <!-- Add other views here -->
+    <!-- Add other views here -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerofuser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/chatitem">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        tools:itemCount="1000"
+        android:layout_above="@+id/signout"
+        tools:listitem="@layout/chatitem" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/signout"
+        android:layout_alignParentBottom="true"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:contentDescription="signout">
+        android:contentDescription="signout" />
 
-    </com.google.android.material.floatingactionbutton.FloatingActionButton>
-
-    </LinearLayout>
 
 </RelativeLayout>
