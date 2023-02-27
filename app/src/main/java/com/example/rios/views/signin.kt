@@ -7,6 +7,7 @@ import android.widget.EditText
 import com.example.rios.R
 import com.example.rios.utils.Extensions.toast
 import com.example.rios.utils.FirebaseUtils.firebaseAuth
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_signin.*
 
 class signin : AppCompatActivity() {
@@ -18,6 +19,12 @@ class signin : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signin)
         signInInputsArray = arrayOf(etSignInEmail, etSignInPassword)
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+            return
+        }
         btnCreateAccount2.setOnClickListener {
             startActivity(Intent(this, Createaccount::class.java))
             finish()
