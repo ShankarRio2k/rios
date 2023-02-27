@@ -19,20 +19,73 @@ import java.util.*
 class Chat : Fragment() {
 
     private lateinit var db: FirebaseFirestore
-    private lateinit var auth: FirebaseAuth
-    private lateinit var adapter: ChatAdapter
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var chatAdapter: ChatAdapter
+
+    private var messages = mutableListOf<ChatMessage>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        val view = inflater.inflate(R.layout.fragment_chat, container, false)
-        db = FirebaseFirestore.getInstance()
-        auth = FirebaseAuth.getInstance()
-        return view
+    ): View? {
+        return inflater.inflate(R.layout.fragment_chat, container, false)
     }
 
-    companion object {
-        private const val TAG = "ChatFragment"
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+//        firebaseAuth = FirebaseAuth.getInstance()
+//        db = FirebaseFirestore.getInstance()
+//
+//        chatAdapter = ChatAdapter(requireContext(), messages, firebaseAuth.currentUser!!.uid)
+//        messageRecyclerView.adapter = chatAdapter
+//        messageRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+//
+//        sendMessageButton.setOnClickListener {
+//            val message = messageEditText.text.toString().trim()
+//            if (message.isNotEmpty()) {
+//                sendMessage(message)
+//            }
+//        }
+//
+//        db.collection("messages")
+//            .orderBy("createdAt")
+//            .addSnapshotListener { snapshot, error ->
+//                if (error != null) {
+//                    Log.w(TAG, "Listen failed", error)
+//                    return@addSnapshotListener
+//                }
+//
+//                if (snapshot != null) {
+//                    messages.clear()
+//                    for (doc in snapshot) {
+//                        val chatMessage = doc.toObject(ChatMessage::class.java)
+//                        messages.add(chatMessage)
+//                    }
+//                    chatAdapter.notifyDataSetChanged()
+//                } else {
+//                    Log.d(TAG, "Current data: null")
+//                }
+//            }
+//    }
+//
+//    private fun sendMessage(messageText: String) {
+//        val userId = firebaseAuth.currentUser!!.uid
+//        val userName = firebaseAuth.currentUser!!.displayName ?: "Unknown"
+//        val message = ChatMessage(messageText, userId, userName, Timestamp.now())
+//        db.collection("messages")
+//            .add(message)
+//            .addOnSuccessListener { documentReference ->
+//                Log.d(TAG, "Message sent with ID: ${documentReference.id}")
+//            }
+//            .addOnFailureListener { e ->
+//                Log.w(TAG, "Error adding message", e)
+//            }
+//        messageEditText.setText("")
+//    }
+//
+//    companion object {
+//        private const val TAG = "ChatFragment"
     }
 }
+
