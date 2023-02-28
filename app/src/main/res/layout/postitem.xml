@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/profilepic"
+            android:scaleType="centerCrop"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Name"
+            android:textSize="16sp"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"
+            android:layout_toEndOf="@id/profile_picture"
+            android:layout_marginStart="16dp" />
+
+        <ImageView
+            android:id="@+id/post_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/download"
+            android:scaleType="centerCrop"
+            android:layout_below="@id/profile_picture"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:id="@+id/post_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=" Donec eget est vel leo sodales iaculis sit amet sit amet lorem."
+            android:textSize="16sp"
+            android:layout_below="@id/post_image"
+            android:layout_marginTop="16dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_below="@id/post_text"/>
+
+        <LinearLayout
+            android:id="@+id/likes_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_below="@id/post_text">
+
+            <ImageView
+                android:id="@+id/like_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_baseline_favorite_border_24"/>
+
+            <TextView
+                android:id="@+id/like_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1234"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/comments_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_below="@id/post_text"
+            android:layout_toEndOf="@id/likes_layout"
+            android:layout_marginStart="16dp"/>
+
+        <ImageView
+            android:id="@+id/comment_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_baseline_add_comment_24"/>
+
+
+</RelativeLayout>

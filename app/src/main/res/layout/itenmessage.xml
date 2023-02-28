@@ -16,7 +16,7 @@
         android:paddingTop="8dp"
         android:paddingEnd="16dp"
         android:paddingBottom="8dp"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="16sp" />
 
     <TextView
@@ -28,15 +28,15 @@
         android:textSize="12sp"
         android:textColor="@android:color/black"/>
 
-    <TextView
-        android:id="@+id/time_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@id/message_text"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:textColor="@android:color/black"
-        android:textSize="12sp" />
+<!--    <TextView-->
+<!--        android:id="@+id/time_text"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_alignBottom="@id/message_text"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:textColor="@android:color/black"-->
+<!--        android:textSize="12sp" />-->
 
 </RelativeLayout>

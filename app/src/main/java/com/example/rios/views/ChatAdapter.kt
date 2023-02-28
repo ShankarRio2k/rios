@@ -33,11 +33,17 @@ class ChatAdapter(
     inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val messageTextView: TextView = itemView.findViewById(R.id.message_text)
         private val senderTextView: TextView = itemView.findViewById(R.id.sender_text)
-        private val timeTextView: TextView = itemView.findViewById(R.id.message_time)
+//        private val timeTextView: TextView = itemView.findViewById(R.id.time_text)
 
         fun bind(message: ChatMessage) {
-            messageTextView.text = message.createdAt.toString()
-            timeTextView.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(message.createdAt)
+            messageTextView.text = message.message.toString()
+
+//            timeTextView.text = message.createdAt?.let {
+//                SimpleDateFormat("HH:mm", Locale.getDefault()).format(
+//                    it
+//                )
+//            }
+
             if (message.senderId == currentUserId) {
                 senderTextView.text = context.getString(R.string.you)
             } else {

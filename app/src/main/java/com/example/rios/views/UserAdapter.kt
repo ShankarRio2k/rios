@@ -15,7 +15,6 @@ import com.example.rios.R
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_setup_prof.view.*
 import kotlinx.android.synthetic.main.chatitem.view.*
-import kotlinx.android.synthetic.main.wertyui.view.*
 
 class UserAdapter(val context: Context, val users: List<User>) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
