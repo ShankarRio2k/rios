@@ -8,11 +8,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rios.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 
-class surf : Fragment() {
+class SurfFragment : Fragment() {
 
     private lateinit var postAdapter: postAdapter
     private val posts = listOf<post>()
@@ -26,9 +27,13 @@ class surf : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         postAdapter = postAdapter(requireContext(), posts)
         recyclerView.adapter = postAdapter
+
+        val addPostButton = view.findViewById<FloatingActionButton>(R.id.addpost)
+        addPostButton.setOnClickListener {
+
+        }
+
         return view
-
-
     }
 
     companion object {
