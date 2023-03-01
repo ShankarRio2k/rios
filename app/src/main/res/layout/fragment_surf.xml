@@ -12,10 +12,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         tools:listitem="@layout/postitem"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
         android:scrollbars="vertical"
-        app:layoutManager="LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/addpost"
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="10" />
