@@ -1,6 +1,6 @@
 package com.example.rios.views
 
-import com.google.protobuf.Timestamp
+import com.google.firebase.Timestamp
 
 data class post(
     val postId: String,
