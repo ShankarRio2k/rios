@@ -1,54 +1,92 @@
 package com.example.rios.views
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rios.R
-import java.text.SimpleDateFormat
-import java.util.*
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
 
-class ChatAdapter(
-    private val context: Context,
-    private val messages: List<ChatMessage>,
-    private val currentUserId: String
-) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder>() {
+class ChatAdapter(private val currentUserId: String) :
+    FirestoreRecyclerAdapter<ChatMessage, RecyclerView.ViewHolder>(
+        FirestoreRecyclerOptions.Builder<ChatMessage>()
+            .setQuery(
+                FirebaseFirestore.getInstance().collection("messages").orderBy("createdAt"),
+                ChatMessage::class.java
+            )
+            .build()
+    ) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.itenmessage, parent, false)
-        return MessageViewHolder(view)
+    companion object {
+        private const val ITEM_SEND = 1
+        private const val ITEM_RECEIVE = 2
     }
 
-    override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
-        val message = messages[position]
-        holder.bind(message)
+    inner class SenderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val messageText: TextView = itemView.findViewById(R.id.sender_text)
+        val messageTime: TextView = itemView.findViewById(R.id.time_text)
     }
 
-    override fun getItemCount(): Int {
-        return messages.size
+    inner class ReceiverViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val messageText: TextView = itemView.findViewById(R.id.message_text)
+        val messageTime: TextView = itemView.findViewById(R.id.time_text)
     }
 
-    inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val messageTextView: TextView = itemView.findViewById(R.id.message_text)
-        private val senderTextView: TextView = itemView.findViewById(R.id.sender_text)
-//        private val timeTextView: TextView = itemView.findViewById(R.id.time_text)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == ITEM_SEND) {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.senderchatlayout, parent, false)
+            SenderViewHolder(view)
+        } else {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.receiverchatlayout, parent, false)
+            ReceiverViewHolder(view)
+        }
+    }
 
-        fun bind(message: ChatMessage) {
-            messageTextView.text = message.message.toString()
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, model: ChatMessage) {
+        if (holder is SenderViewHolder) {
+            holder.messageText.text = model.message
+            holder.messageTime.text = model.currenttime.toString()
+        } else if (holder is ReceiverViewHolder) {
+            holder.messageText.text = model.message
+            holder.messageTime.text = model.currenttime.toString()
+        }
+    }
 
-//            timeTextView.text = message.createdAt?.let {
-//                SimpleDateFormat("HH:mm", Locale.getDefault()).format(
-//                    it
-//                )
-//            }
+    override fun getItemViewType(position: Int): Int {
+        val model = getItem(position)
+        return if (model.senderid == currentUserId) {
+            ITEM_SEND
+        } else {
+            ITEM_RECEIVE
+        }
+    }
 
-            if (message.senderId == currentUserId) {
-                senderTextView.text = context.getString(R.string.you)
-            } else {
-                senderTextView.text = message.senderName
+    fun addMessage(message: String, currenttime: Timestamp, senderid: String) {
+        val message = hashMapOf(
+            "message" to message,
+            "currenttime" to currenttime,
+            "senderid" to senderid,
+        )
+        FirebaseFirestore.getInstance()
+            .collection("messages")
+            .add(message)
+            .addOnSuccessListener {
+
             }
+            .addOnFailureListener {
+
+            }
+    }
+
+
+    override fun onDataChanged() {
+        // Scroll to the bottom when new data is added
+        if (itemCount > 0) {
+            // TODO: Implement scroll to bottom
         }
     }
 }
