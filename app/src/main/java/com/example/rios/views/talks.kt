@@ -49,17 +49,17 @@ class talks : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = userAdapter
 
-        signout.setOnClickListener{
-            auth.signOut()
-            signout.setOnClickListener {
-                // Sign the user out
-                FirebaseAuth.getInstance().signOut()
-                val intent = Intent(requireContext(), signin::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-            }
-
-        }
+//        signout.setOnClickListener{
+//            auth.signOut()
+//            signout.setOnClickListener {
+//                // Sign the user out
+//                FirebaseAuth.getInstance().signOut()
+//                val intent = Intent(requireContext(), signin::class.java)
+//                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//                startActivity(intent)
+//            }
+//
+//        }
 
         db.collection("profiles")
             .get()

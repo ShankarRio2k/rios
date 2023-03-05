@@ -37,6 +37,7 @@ class Chat : Fragment() {
             if (messagetxt.isNotEmpty()) {
                 // Send the message
                 adapter.addMessage(message, currenttime, senderid )
+                
                 chatInputEditText.text?.clear()
             }
         }

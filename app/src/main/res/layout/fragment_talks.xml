@@ -14,12 +14,6 @@
         android:layout_above="@+id/signout"
         tools:listitem="@layout/chatitem" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/signout"
-        android:layout_alignParentBottom="true"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:contentDescription="signout" />
 
 
 </RelativeLayout>
