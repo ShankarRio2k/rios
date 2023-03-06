@@ -11,7 +11,9 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 
-class ChatAdapter(private val currentUserId: String) :
+class ChatAdapter(
+    private val currentChatMessageList: ArrayList<ChatMessage>
+) :
     FirestoreRecyclerAdapter<ChatMessage, RecyclerView.ViewHolder>(
         FirestoreRecyclerOptions.Builder<ChatMessage>()
             .setQuery(
@@ -27,59 +29,54 @@ class ChatAdapter(private val currentUserId: String) :
     }
 
     inner class SenderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val messageText: TextView = itemView.findViewById(R.id.sender_text)
-        val messageTime: TextView = itemView.findViewById(R.id.time_text)
+        val messageText: TextView = itemView.findViewById(R.id.senndertext)
+        val messageTime: TextView = itemView.findViewById(R.id.timeofmessages)
     }
 
     inner class ReceiverViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val messageText: TextView = itemView.findViewById(R.id.message_text)
-        val messageTime: TextView = itemView.findViewById(R.id.time_text)
+        val messageText: TextView = itemView.findViewById(R.id.receivertxt)
+        val messageTime: TextView = itemView.findViewById(R.id.timeofmessages)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == ITEM_SEND) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.senderchatlayout, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.senderchatlayout, parent, false)
             SenderViewHolder(view)
         } else {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.receiverchatlayout, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.receiverchatlayout, parent, false)
             ReceiverViewHolder(view)
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, model: ChatMessage) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        model: ChatMessage
+    ) {
         if (holder is SenderViewHolder) {
-            holder.messageText.text = model.message
-            holder.messageTime.text = model.currenttime.toString()
+            holder.messageText.text = currentChatMessageList[position].message//model.message
+            holder.messageTime.text =
+                currentChatMessageList[position].currenttime//model.currenttime.toString()
         } else if (holder is ReceiverViewHolder) {
-            holder.messageText.text = model.message
-            holder.messageTime.text = model.currenttime.toString()
+            holder.messageText.text = currentChatMessageList[position].message//model.message
+            holder.messageTime.text =
+                currentChatMessageList[position].currenttime//model.currenttime.toString()
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         val model = getItem(position)
-        return if (model.senderid == currentUserId) {
+        return if (model.senderid == currentChatMessageList[position].senderid) {
             ITEM_SEND
         } else {
             ITEM_RECEIVE
         }
     }
 
-    fun addMessage(message: String, currenttime: Timestamp, senderid: String) {
-        val message = hashMapOf(
-            "message" to message,
-            "currenttime" to currenttime,
-            "senderid" to senderid,
-        )
-        FirebaseFirestore.getInstance()
-            .collection("messages")
-            .add(message)
-            .addOnSuccessListener {
+    fun addMessage(currentMessage: ChatMessage) {
 
-            }
-            .addOnFailureListener {
-
-            }
     }
 
 
