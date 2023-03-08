@@ -18,6 +18,11 @@ import kotlinx.android.synthetic.main.fragment_chat.*
 class Chat : Fragment() {
     val TAG = "Chat"
     private lateinit var adapter: ChatAdapter
+    private lateinit var messageList: ArrayList<ChatMessage>
+    val currentUserId = FirebaseAuth.getInstance().currentUser?.uid.toString()
+
+    val ReceiverRoom : String? = null
+    val SenderRoom : String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +34,10 @@ class Chat : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+//        SenderRoom = currentUserId +
+
+
         Firebase.firestore.collection("messages").orderBy("currenttime").get()
             .addOnSuccessListener { documents ->
                 val currentMessages = ArrayList<ChatMessage>()
@@ -55,7 +64,6 @@ class Chat : Fragment() {
             .addOnFailureListener { exception ->
                 Log.d(TAG, "get failed with ", exception)
             }
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
         //        adapter = ChatAdapter(currentUserId)
 
