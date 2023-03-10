@@ -6,15 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.rios.R
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.synthetic.main.activity_setup_prof.view.*
-import kotlinx.android.synthetic.main.chatitem.view.*
 
 class UserAdapter(val context: Context, val users: List<User>) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -47,7 +43,7 @@ class UserAdapter(val context: Context, val users: List<User>) : RecyclerView.Ad
 
         holder.itemView.setOnClickListener{
             (context as FragmentActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.inner_container, Chat()).commit()
+                .replace(R.id.inner_container, Chat(user)).commit()
         }
         // Bind other views here
     }

@@ -8,21 +8,29 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rios.R
+import com.example.rios.utils.FirebaseUtils
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_chat.*
+import kotlinx.android.synthetic.main.itenmessage.*
 
-class Chat : Fragment() {
+class Chat() : Fragment() {
+    private lateinit var newUser: User
+
+    constructor(user: User) : this() {
+        this.newUser = user
+    }
+
     val TAG = "Chat"
     private lateinit var adapter: ChatAdapter
     private lateinit var messageList: ArrayList<ChatMessage>
     val currentUserId = FirebaseAuth.getInstance().currentUser?.uid.toString()
 
-    val ReceiverRoom : String? = null
-    val SenderRoom : String? = null
+    var ReceiverRoom: String = ""
+    var SenderRoom: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,13 +42,16 @@ class Chat : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        SenderRoom = newUser.id + FirebaseUtils.firebaseAuth.currentUser!!.uid
+        ReceiverRoom = FirebaseUtils.firebaseAuth.currentUser!!.uid + newUser.id
+        val currentMessages = ArrayList<ChatMessage>()
+        val messageAdapter = MessageAdapter(requireContext(), currentMessages)
+        chatRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        chatRecyclerView.adapter = messageAdapter
 
-//        SenderRoom = currentUserId +
-
-
-        Firebase.firestore.collection("messages").orderBy("currenttime").get()
+        Firebase.firestore.collection("chat").document(SenderRoom).collection("messages")
+            .orderBy("currenttime").get()
             .addOnSuccessListener { documents ->
-                val currentMessages = ArrayList<ChatMessage>()
                 if (documents != null) {
                     currentMessages.clear()
                     for (document in documents) {
@@ -50,13 +61,11 @@ class Chat : Fragment() {
                                 message = document.data["message"].toString(),
                                 currenttime = document.data["currenttime"].toString(),
                                 senderid = document.data["senderid"].toString(),
-                                room = ""
+                                room = SenderRoom
                             )
                         )
                     }
-                    chatRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-                    adapter = ChatAdapter(currentMessages)
-                    chatRecyclerView.adapter = adapter
+                    messageAdapter.notifyDataSetChanged()
                 } else {
                     Log.d(TAG, "No such document")
                 }
@@ -69,29 +78,35 @@ class Chat : Fragment() {
 
 
         chatSendButton.setOnClickListener {
-            val currentMessage = ChatMessage(
-                message = chatInputEditText.text.toString().trim(),
-                currenttime = Timestamp.now().toString(),
-                senderid = currentUserId
-            )
-            if (currentMessage.message.isNotEmpty()) {
-                // Send the message
-                val message = hashMapOf(
-                    "message" to currentMessage.message,
-                    "currenttime" to currentMessage.currenttime,
-                    "senderid" to currentMessage.senderid,
+            chatSendButton.setOnClickListener {
+                val currentMessage = ChatMessage(
+                    message = chatInputEditText.text.toString().trim(),
+                    currenttime = Timestamp.now().toString(),
+                    senderid = currentUserId,
+                    room = SenderRoom
                 )
-                FirebaseFirestore.getInstance()
-                    .collection("messages")
-                    .add(message)
-                    .addOnSuccessListener {
+                if (currentMessage.message?.isNotEmpty() == true) {
+                    // Send the message
+                    val message = hashMapOf(
+                        "message" to currentMessage.message,
+                        "currenttime" to currentMessage.currenttime,
+                        "senderid" to currentMessage.senderid,
+                    )
+                    FirebaseFirestore.getInstance().collection("chat").document(SenderRoom)
+                        .collection("messages")
+                        .add(message)
+                        .addOnSuccessListener {
+                            FirebaseFirestore.getInstance().collection("chat")
+                                .document(ReceiverRoom)
+                                .collection("messages")
+                                .add(message)
+                        }
+                        .addOnFailureListener {
 
-                    }
-                    .addOnFailureListener {
+                        }
 
-                    }
-
-                chatInputEditText.text?.clear()
+                    chatInputEditText.text?.clear()
+                }
             }
         }
     }

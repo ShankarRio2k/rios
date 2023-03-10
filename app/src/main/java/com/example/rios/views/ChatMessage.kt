@@ -1,10 +1,17 @@
 package com.example.rios.views
 
-import com.example.rios.utils.FirebaseUtils.firebaseAuth
+class ChatMessage {
+    var message: String? = null
+    var currenttime: String? = null
+    var senderid: String? = null
+    var room: String? = null
 
-data class ChatMessage(
-    var message: String = "",
-    var room: String = "",
-    var currenttime: String = "",
-    var senderid: String = firebaseAuth.currentUser!!.uid
-)
+    constructor() {}
+
+    constructor(message: String?, currenttime: String?, senderid: String?, room: String?) {
+        this.message = message
+        this.currenttime = currenttime
+        this.senderid = senderid
+        this.room = room
+    }
+}

@@ -45,7 +45,7 @@ class talks : Fragment() {
         userAdapter = UserAdapter(requireContext(), users)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerofuser)
-        val signout = view.findViewById<FloatingActionButton>(R.id.signout)
+//        val signout = view.findViewById<FloatingActionButton>(R.id.signout)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = userAdapter
 

@@ -12,6 +12,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ChatAdapter(
+    private val recyclerView: RecyclerView,
     private val currentChatMessageList: ArrayList<ChatMessage>
 ) :
     FirestoreRecyclerAdapter<ChatMessage, RecyclerView.ViewHolder>(
@@ -83,7 +84,7 @@ class ChatAdapter(
     override fun onDataChanged() {
         // Scroll to the bottom when new data is added
         if (itemCount > 0) {
-            // TODO: Implement scroll to bottom
+            recyclerView.smoothScrollToPosition(itemCount - 1)
         }
     }
 }

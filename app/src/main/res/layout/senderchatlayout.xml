@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="50dp"
+    android:layout_alignParentEnd="true"
     android:padding="2dp">
 
     <RelativeLayout
@@ -15,30 +15,26 @@
             android:id="@+id/senndertext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="9dp"
-            android:paddingTop="7dp"
-            android:paddingRight="40dp"
-            android:paddingBottom="7dp"
+            android:gravity="right"
+            android:paddingTop="4dp"
+            android:paddingBottom="3dp"
             android:text="sender Message displays here"
             android:textColor="@color/black"
             android:textSize="18sp">
-
         </TextView>
+
 
         <TextView
             android:id="@+id/timeofmessages"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/senndertext"
-            android:layout_toRightOf="@+id/senndertext"
-            android:padding="7dp"
+            android:padding="2dp"
             android:text="20:9"
             android:textColor="@color/black"
             android:textSize="10sp">
 
         </TextView>
     </RelativeLayout>
-
-
 
 </RelativeLayout>
