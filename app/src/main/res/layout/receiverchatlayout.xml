@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="end"
     android:padding="2dp">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/layoutofmessage"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="200dp"
-        android:layout_alignParentEnd="true">
+        android:layout_marginEnd="10dp"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/receivertxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
             android:paddingLeft="9dp"
-            android:paddingTop="7dp"
-            android:paddingRight="40dp"
-            android:paddingBottom="7dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
             android:text="sender Message"
             android:textColor="@color/black"
             android:textSize="18sp">
@@ -29,16 +30,12 @@
             android:id="@+id/timeofmessages"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/senndertext"
-            android:layout_toRightOf="@+id/senndertext"
             android:padding="7dp"
-            android:text="20:9"
+            android:text="20:3"
             android:textColor="@color/black"
             android:textSize="10sp">
 
         </TextView>
-    </RelativeLayout>
-
-
+    </LinearLayout>
 
 </RelativeLayout>

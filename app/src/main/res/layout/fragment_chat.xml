@@ -8,19 +8,32 @@
     android:focusable="true"
     tools:context=".views.Chat">
 
+    <ImageView
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        android:src="@drawable/left"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.98"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.004">
+
+    </ImageView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="3dp"
         android:clipToPadding="false"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
         android:scrollbars="vertical"
+        app:layout_constraintBottom_toTopOf="@id/chatInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/chatInputLayout"
+        app:layout_constraintVertical_bias="0.0"
         tools:itemCount="10" />
 
     <LinearLayout
@@ -34,7 +47,7 @@
             android:id="@+id/chatInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_margin="4dp"
             android:layout_weight="1"
             android:hint="Type a message...">
 
@@ -46,13 +59,16 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
+        <ImageView
             android:id="@+id/chatSendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Send"
-            app:layout_constraintBottom_toBottomOf="@+id/chatInputLayout"
+            android:layout_width="54dp"
+            android:layout_height="40dp"
+            android:clickable="true"
+            android:layout_marginTop="14dp"
+            android:src="@drawable/paperplane"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/chatInputLayout" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="sent" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
