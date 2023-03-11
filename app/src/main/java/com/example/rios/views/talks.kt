@@ -15,51 +15,36 @@ import com.example.rios.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
+
+import kotlinx.android.synthetic.main.fragment_talks.*
 
 class talks : Fragment() {
     private lateinit var db: FirebaseFirestore
     private lateinit var userAdapter: UserAdapter
     private lateinit var users: MutableList<User>
-    // Get an instance of FirebaseAuth
-    val auth = FirebaseAuth.getInstance()
-
-// Call the signOut() method to sign out the current user
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        db = FirebaseFirestore.getInstance()
-
-    }
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_talks, container, false)
         users = mutableListOf()
         userAdapter = UserAdapter(requireContext(), users)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerofuser)
-//        val signout = view.findViewById<FloatingActionButton>(R.id.signout)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = userAdapter
+        recyclerView?.layoutManager = LinearLayoutManager(activity)
+        recyclerView?.adapter = userAdapter
 
-//        signout.setOnClickListener{
-//            auth.signOut()
-//            signout.setOnClickListener {
-//                // Sign the user out
-//                FirebaseAuth.getInstance().signOut()
-//                val intent = Intent(requireContext(), signin::class.java)
-//                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//                startActivity(intent)
-//            }
-//
-//        }
+        db = FirebaseFirestore.getInstance()
+        val settings = FirebaseFirestoreSettings.Builder()
+            .setPersistenceEnabled(true)
+            .build()
+        db.firestoreSettings = settings
 
         db.collection("profiles")
             .get()
@@ -76,9 +61,4 @@ class talks : Fragment() {
 
         return view
     }
-
 }
-
-
-
-

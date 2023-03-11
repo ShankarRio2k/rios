@@ -44,6 +44,7 @@ class Chat() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         SenderRoom = newUser.id + FirebaseUtils.firebaseAuth.currentUser!!.uid
         ReceiverRoom = FirebaseUtils.firebaseAuth.currentUser!!.uid + newUser.id
+
         val currentMessages = ArrayList<ChatMessage>()
         val messageAdapter = MessageAdapter(requireContext(), currentMessages)
         chatRecyclerView.layoutManager = LinearLayoutManager(requireContext())
