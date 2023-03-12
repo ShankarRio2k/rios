@@ -46,18 +46,23 @@ class talks : Fragment() {
             .build()
         db.firestoreSettings = settings
 
-        db.collection("profiles")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    val user = document.toObject(User::class.java)
-                    users.add(user)
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            Log.d("talks", "Current user ID: ${currentUser.uid}")
+            db.collection("profiles")
+                .whereNotEqualTo("id", currentUser.uid) // exclude current user
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        val user = document.toObject(User::class.java)
+                        users.add(user)
+                    }
+                    userAdapter.notifyDataSetChanged()
                 }
-                userAdapter.notifyDataSetChanged()
-            }
-            .addOnFailureListener { exception ->
-                Log.w("talks", "Error getting users", exception)
-            }
+                .addOnFailureListener { exception ->
+                    Log.w("talks", "Error getting users", exception)
+                }
+        }
 
         return view
     }

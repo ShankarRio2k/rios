@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.itenmessage.*
 
 class Chat() : Fragment() {
     private lateinit var newUser: User
+    private lateinit var db: FirebaseFirestore
 
     constructor(user: User) : this() {
         this.newUser = user
@@ -50,7 +51,13 @@ class Chat() : Fragment() {
         chatRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         chatRecyclerView.adapter = messageAdapter
 
-        Firebase.firestore.collection("chat").document(SenderRoom).collection("messages")
+        db = FirebaseFirestore.getInstance()
+        val settings = FirebaseFirestoreSettings.Builder()
+            .setPersistenceEnabled(true)
+            .build()
+        db.firestoreSettings = settings
+
+       db.collection("chat").document(SenderRoom).collection("messages")
             .orderBy("currenttime").get()
             .addOnSuccessListener { documents ->
                 if (documents != null) {
@@ -79,7 +86,6 @@ class Chat() : Fragment() {
 
 
         chatSendButton.setOnClickListener {
-            chatSendButton.setOnClickListener {
                 val currentMessage = ChatMessage(
                     message = chatInputEditText.text.toString().trim(),
                     currenttime = Timestamp.now().toString(),
@@ -111,4 +117,3 @@ class Chat() : Fragment() {
             }
         }
     }
-}

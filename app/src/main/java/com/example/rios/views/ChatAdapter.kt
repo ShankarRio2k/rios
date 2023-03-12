@@ -31,7 +31,7 @@ class ChatAdapter(
 
     inner class SenderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val messageText: TextView = itemView.findViewById(R.id.senndertext)
-        val messageTime: TextView = itemView.findViewById(R.id.timeofmessages)
+        val messageTime: TextView = itemView.findViewById(R.id.timeofmessagesr)
     }
 
     inner class ReceiverViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -59,11 +59,11 @@ class ChatAdapter(
         if (holder is SenderViewHolder) {
             holder.messageText.text = currentChatMessageList[position].message//model.message
             holder.messageTime.text =
-                currentChatMessageList[position].currenttime//model.currenttime.toString()
+                currentChatMessageList[position].currenttime.toString()//model.currenttime.toString()
         } else if (holder is ReceiverViewHolder) {
             holder.messageText.text = currentChatMessageList[position].message//model.message
-            holder.messageTime.text =
-                currentChatMessageList[position].currenttime//model.currenttime.toString()
+            holder.messageTime.text = Timestamp.now().toString()
+                currentChatMessageList[position].currenttime.toString()//model.currenttime.toString()
         }
     }
 
