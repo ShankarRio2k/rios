@@ -11,18 +11,18 @@ import com.example.rios.R
 import com.google.firebase.auth.FirebaseAuth
 
 class MessageAdapter(val context: Context, val messageList: ArrayList<ChatMessage>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    RecyclerView.Adapter<ViewHolder>() {
     val ITEM_SENT = 1
     val ITEM_RECEIVE = 2
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
        if (viewType == 1){
-           val view:View = LayoutInflater.from(context).inflate(R.layout.receiverchatlayout,parent,false)
-           return  ReceiveviewHolder(view)
-       }else{
            val view:View = LayoutInflater.from(context).inflate(R.layout.senderchatlayout,parent,false)
            return  SentviewHolder(view)
+       }else{
+           val view:View = LayoutInflater.from(context).inflate(R.layout.receiverchatlayout,parent,false)
+           return  ReceiveviewHolder(view)
        }
 
     }
@@ -53,11 +53,11 @@ class MessageAdapter(val context: Context, val messageList: ArrayList<ChatMessag
             return super.getItemViewType(position)
     }
 
-    class SentviewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
+    class SentviewHolder(ItemView: View) : ViewHolder(ItemView) {
         val sentmessage = itemView.findViewById<TextView>(R.id.senndertext)
     }
 
-    class ReceiveviewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
+    class ReceiveviewHolder(ItemView: View) : ViewHolder(ItemView) {
         val receivemessage = itemView.findViewById<TextView>(R.id.receivertxt)
 
     }

@@ -12,10 +12,7 @@ import com.example.rios.utils.FirebaseUtils
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_chat.*
-import kotlinx.android.synthetic.main.itenmessage.*
 
 class Chat() : Fragment() {
     private lateinit var newUser: User

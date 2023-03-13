@@ -1,5 +1,6 @@
 package com.example.rios.views
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ChatAdapter(
-    private val recyclerView: RecyclerView,
+    private val recyclerView: Context,
     private val currentChatMessageList: ArrayList<ChatMessage>
 ) :
     FirestoreRecyclerAdapter<ChatMessage, RecyclerView.ViewHolder>(
@@ -62,7 +63,7 @@ class ChatAdapter(
                 currentChatMessageList[position].currenttime.toString()//model.currenttime.toString()
         } else if (holder is ReceiverViewHolder) {
             holder.messageText.text = currentChatMessageList[position].message//model.message
-            holder.messageTime.text = Timestamp.now().toString()
+            holder.messageTime.text =
                 currentChatMessageList[position].currenttime.toString()//model.currenttime.toString()
         }
     }
@@ -84,7 +85,7 @@ class ChatAdapter(
     override fun onDataChanged() {
         // Scroll to the bottom when new data is added
         if (itemCount > 0) {
-            recyclerView.smoothScrollToPosition(itemCount - 1)
+
         }
     }
 }
