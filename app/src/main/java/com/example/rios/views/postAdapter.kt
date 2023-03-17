@@ -42,8 +42,9 @@ class postAdapter(private val context: Context, private val posts: List<post>) :
 
             usernameTextView.text = post.username
             captionTextView.text = post.caption
-            timestampTextView.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-                .format(post.timestamp)
+            timestampTextView.text = post.timestamp.toString()
+//                SimpleDateFormat("dd MM yyyy", Locale.getDefault())
+//                .format(post.timestamp)
         }
     }
 }

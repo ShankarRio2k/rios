@@ -10,12 +10,10 @@
         android:id="@+id/postRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        tools:listitem="@layout/postitem"
+        android:clipToPadding="true"
         android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@id/addpost"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:itemCount="10" />
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addpost"

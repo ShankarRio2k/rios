@@ -1,5 +1,6 @@
 package com.example.rios.views
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -29,6 +30,7 @@ class Chat() : Fragment() {
 
     var ReceiverRoom: String = ""
     var SenderRoom: String = ""
+    var Room: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,6 +45,8 @@ class Chat() : Fragment() {
         SenderRoom = newUser.id + FirebaseUtils.firebaseAuth.currentUser!!.uid
         ReceiverRoom = FirebaseUtils.firebaseAuth.currentUser!!.uid + newUser.id
 
+        Room = SenderRoom
+
         val currentMessages = ArrayList<ChatMessage>()
         val messageAdapter = MessageAdapter(requireContext(), currentMessages)
         chatRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -54,7 +58,7 @@ class Chat() : Fragment() {
             .build()
         db.firestoreSettings = settings
 
-       db.collection("chat").document(SenderRoom).collection("messages")
+       db.collection("chat").document(Room).collection("messages")
             .orderBy("currenttime").get()
             .addOnSuccessListener { documents ->
                 if (documents != null) {
@@ -95,8 +99,9 @@ class Chat() : Fragment() {
                         "message" to currentMessage.message,
                         "currenttime" to currentMessage.currenttime,
                         "senderid" to currentMessage.senderid,
+                        "room" to currentMessage.room
                     )
-                    FirebaseFirestore.getInstance().collection("chat").document(SenderRoom)
+                    FirebaseFirestore.getInstance().collection("chat").document(Room)
                         .collection("messages")
                         .add(message)
                         .addOnSuccessListener {
