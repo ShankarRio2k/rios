@@ -97,7 +97,7 @@ class PostActivity : AppCompatActivity() {
             e.printStackTrace()
         }
         val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap!!.compress(Bitmap.CompressFormat.JPEG, 25, byteArrayOutputStream)
+        bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
         val data = byteArrayOutputStream.toByteArray()
 
         imgref.putBytes(data).addOnSuccessListener {
@@ -112,7 +112,7 @@ class PostActivity : AppCompatActivity() {
                 val ref = firebaseFirestore.collection("Posts").document(Postid)
                 val map: MutableMap<String, Any> = HashMap()
                 map["postId"] = Postid
-                map["imageUrl"] = _imageUri!!
+                map["imageUrl"] = _imageUri
                 if (user != null) {
                     map["username"] = user.name
                 }
@@ -120,18 +120,14 @@ class PostActivity : AppCompatActivity() {
                 map["caption"] = description.text.toString()
                 map["userId"] = firebaseAuth?.currentUser?.uid.toString()
                 println("ramuda")
-                if (ref != null) {
-                    ref.set(map).addOnSuccessListener {
-                        Toast.makeText(this@PostActivity, "map added", Toast.LENGTH_SHORT).show()
-
-
-                    }.addOnFailureListener {
-                        Toast.makeText(
-                            this@PostActivity,
-                            "map not added",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                ref.set(map).addOnSuccessListener {
+                    Toast.makeText(this@PostActivity, "map added", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener {
+                    Toast.makeText(
+                        this@PostActivity,
+                        "map not added",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 pd.dismiss()
                 finish()

@@ -39,7 +39,7 @@ class surf : Fragment() {
         // Load the posts from Firestore
         val db = FirebaseFirestore.getInstance()
         db.collection("Posts")
-            .orderBy("Publisher", Query.Direction.DESCENDING)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
             .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 if (firebaseFirestoreException != null) {
                     Log.w(TAG, "Listen failed.", firebaseFirestoreException)

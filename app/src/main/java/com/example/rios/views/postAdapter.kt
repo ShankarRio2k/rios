@@ -14,7 +14,7 @@ import java.util.*
 
 class postAdapter(private val context: Context, private val posts: List<post>) :
     RecyclerView.Adapter<postAdapter.PostViewHolder>() {
-
+    val user : User? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.postitem, parent, false)
         return PostViewHolder(view)
@@ -40,7 +40,7 @@ class postAdapter(private val context: Context, private val posts: List<post>) :
                 .load(post.imageUrl)
                 .into(postImageView)
 
-            usernameTextView.text = post.username
+            usernameTextView.text = user?.name
             captionTextView.text = post.caption
             timestampTextView.text = post.timestamp.toString()
 //                SimpleDateFormat("dd MM yyyy", Locale.getDefault())
