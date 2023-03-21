@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.rios.R
 import com.google.firebase.auth.FirebaseAuth
 
+
 class MessageAdapter(val context: Context, val messageList: ArrayList<ChatMessage>) :
     RecyclerView.Adapter<ViewHolder>() {
     val ITEM_SENT = 1
