@@ -50,7 +50,7 @@ class talks : Fragment() {
         if (currentUser != null) {
             Log.d("talks", "Current user ID: ${currentUser.uid}")
             db.collection("profiles")
-                .whereNotEqualTo("id", auth.uid) // exclude current user
+                .whereNotEqualTo("id", currentUser.uid) // exclude current user
                 .get()
                 .addOnSuccessListener { result ->
                     for (document in result) {

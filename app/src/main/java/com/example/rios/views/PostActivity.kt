@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -89,7 +90,7 @@ class PostActivity : AppCompatActivity() {
         pd.show()
         val posturi = UUID.randomUUID().toString()
         val imgref: StorageReference =
-            firebaseAuth.uid?.let { storageReference.child("images").child(it).child(posturi) }!!
+            firebaseAuth.currentUser?.uid?.let { storageReference.child("images").child(it).child(posturi) }!!
         var bitmap: Bitmap? = null
         try {
             bitmap = MediaStore.Images.Media.getBitmap(contentResolver, _imageUri)
@@ -106,20 +107,18 @@ class PostActivity : AppCompatActivity() {
                 Toast.makeText(this@PostActivity, "Uri get success", Toast.LENGTH_SHORT).show()
             }.addOnCompleteListener { task ->
                 val downloaduri = task.result
-                val user : User? = null
                 imageurl = downloaduri.toString()
                 val Postid = UUID.randomUUID().toString()
                 val ref = firebaseFirestore.collection("Posts").document(Postid)
                 val map: MutableMap<String, Any> = HashMap()
                 map["postId"] = Postid
                 map["imageUrl"] = _imageUri
-                if (user != null) {
-                    map["username"] = user.name
-                }
                 map["timestamp"] = Timestamp.now()
                 map["caption"] = description.text.toString()
-                map["userId"] = firebaseAuth?.currentUser?.uid.toString()
-                println("ramuda")
+                map["userId"] = firebaseAuth.currentUser?.uid.toString()
+                map["profileUrl"]  = firebaseAuth.currentUser?.photoUrl.toString()
+                map["username"] = firebaseAuth.currentUser?.displayName.toString()
+                Log.d("PostActivity", "uploadimage: ramuda")
                 ref.set(map).addOnSuccessListener {
                     Toast.makeText(this@PostActivity, "map added", Toast.LENGTH_SHORT).show()
                 }.addOnFailureListener {

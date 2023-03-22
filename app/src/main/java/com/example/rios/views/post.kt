@@ -5,11 +5,12 @@ import com.google.firebase.Timestamp
 data class post(
     val postId: String,
     val userId: String,
-    val username: String,
+    var username: String?,
     val caption: String,
     val imageUrl: String,
-    val timestamp: Timestamp?
+    val timestamp: Timestamp?,
+    var profileUrl: String?
 ) {
-    constructor() : this("", "", "", "","", timestamp = null)
+    constructor() : this("", "", "", "", "", timestamp = null, profileUrl = "")
 
 }

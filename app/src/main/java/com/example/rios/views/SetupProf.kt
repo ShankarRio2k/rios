@@ -21,6 +21,7 @@ import com.example.rios.R
 import com.example.rios.utils.Extensions.toast
 import com.example.rios.utils.FirebaseUtils.firebaseAuth
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_setup_prof.*
@@ -67,7 +68,6 @@ class SetupProf : AppCompatActivity() {
     }
 
     private fun saveProfileData(id: String, name: String, bio: String, profilePic: String) {
-        val id = FirebaseFirestore.getInstance().collection("profiles").document().id
         val profileMap = hashMapOf(
             "id" to id,
             "name" to name,
@@ -83,6 +83,19 @@ class SetupProf : AppCompatActivity() {
             imageRef.putFile(_imageUri.value!!)
                 .addOnSuccessListener {
                     imageRef.downloadUrl.addOnSuccessListener {
+                        val profileUpdates = UserProfileChangeRequest.Builder()
+                            .setPhotoUri(it)
+                            .setDisplayName(name)
+                            .build()
+
+                        firebaseAuth.currentUser?.updateProfile(profileUpdates)
+                            ?.addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Log.d(TAG, "User profile updated.")
+                                } else {
+                                    Log.w(TAG, "Failed to update user profile.", task.exception)
+                                }
+                            }
                         profileMap["profilePic"] = it.toString()
                         saveProfileDataToFirestore(profileMap)
                     }
@@ -97,17 +110,18 @@ class SetupProf : AppCompatActivity() {
     }
 
     private fun saveProfileDataToFirestore(profileMap: HashMap<String, String>) {
-        db.collection("profiles")
-            .add(profileMap)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "Profile data saved with ID: ${documentReference.id}")
-                toast("Profile added")
-                progressofsetprof.visibility = View.GONE
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error adding profile data", exception)
-            }
+        firebaseAuth.currentUser?.uid?.let {
+            db.collection("profiles").document(it).set(profileMap)
+                .addOnSuccessListener { documentReference ->
+//                    Log.d(TAG, "Profile data saved with ID: ${documentReference.id}")
+                    toast("Profile added")
+                    progressofsetprof.visibility = View.GONE
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error adding profile data", exception)
+                }
+        }
     }
 }
