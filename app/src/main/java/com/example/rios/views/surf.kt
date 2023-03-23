@@ -55,6 +55,16 @@ class surf : Fragment() {
                 // Add the new posts to the list
                 for (document in querySnapshot!!) {
                     val post = document.toObject(post::class.java)
+
+                    db.collection("profiles").document(post.userId).get()
+                        .addOnSuccessListener { documentSnapshot ->
+                            if (documentSnapshot.exists()) {
+                                post.profileUrl = documentSnapshot.getString("profilePic").toString()
+                                post.username = documentSnapshot.getString("name").toString()
+                            }
+                        }
+                        .addOnFailureListener { println(",,,,,,,,,,,,,,,,") }
+
                     posts.add(post)
                 }
                 // Notify the adapter that the data has changed

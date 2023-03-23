@@ -116,8 +116,8 @@ class PostActivity : AppCompatActivity() {
                 map["timestamp"] = Timestamp.now()
                 map["caption"] = description.text.toString()
                 map["userId"] = firebaseAuth.currentUser?.uid.toString()
-                map["profileUrl"]  = firebaseAuth.currentUser?.photoUrl.toString()
-                map["username"] = firebaseAuth.currentUser?.displayName.toString()
+//                map["profileUrl"]  = firebaseAuth.currentUser!!.photoUrl.toString()
+//                map["username"] = firebaseAuth.currentUser!!.displayName.toString()
                 Log.d("PostActivity", "uploadimage: ramuda")
                 ref.set(map).addOnSuccessListener {
                     Toast.makeText(this@PostActivity, "map added", Toast.LENGTH_SHORT).show()

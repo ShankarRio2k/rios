@@ -101,7 +101,7 @@ class Chat() : Fragment() {
                         "senderid" to currentMessage.senderid,
                         "room" to currentMessage.room
                     )
-                    FirebaseFirestore.getInstance().collection("chat").document(Room)
+                    FirebaseFirestore.getInstance().collection("chat").document(SenderRoom)
                         .collection("messages")
                         .add(message)
                         .addOnSuccessListener {
