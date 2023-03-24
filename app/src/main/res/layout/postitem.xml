@@ -8,11 +8,10 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
-        android:layout_width="55dp"
+        android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="6dp"
-        android:layout_marginTop="1dp"
-        android:padding="4dp"
+        android:layout_marginTop="8dp"
         android:paddingStart="1dp"
         android:src="@drawable/story2"
         app:civ_border_color="@color/appColor"
@@ -26,9 +25,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="3dp"
         android:text="Alica Addams"
         android:textColor="@color/grey"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
         app:layout_constraintTop_toTopOf="@+id/profile_image" />
 
@@ -37,14 +37,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/grey"
+        android:layout_marginTop="6dp"
+        android:textSize="16sp"
         android:text="Traveler,Life lover"
         app:layout_constraintStart_toStartOf="@+id/userName"
         app:layout_constraintTop_toBottomOf="@id/userName" />
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/grey"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/profile_image"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,8 +58,8 @@
         android:id="@+id/Post_image"
         android:layout_width="0dp"
         android:layout_height="350dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="centerCrop"
+        android:layout_marginTop="10dp"
+        android:scaleType="fitXY"
         android:src="@drawable/dp2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -85,7 +88,8 @@
         android:text="354"
         app:drawableLeftCompat="@drawable/ic_heart"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Post_image" />
+        app:layout_constraintTop_toBottomOf="@+id/Post_image"
+        app:drawableTint="@color/grey" />
 
     <TextView
         android:id="@+id/comment"
@@ -99,7 +103,8 @@
         android:gravity="center"
         app:layout_constraintStart_toEndOf="@+id/like"
         app:layout_constraintTop_toBottomOf="@+id/Post_image"
-        app:drawableLeftCompat="@drawable/ic_post_comment" />
+        app:drawableLeftCompat="@drawable/ic_post_comment"
+        app:drawableTint="@color/grey" />
 
     <TextView
         android:id="@+id/share"
@@ -113,7 +118,8 @@
         android:gravity="center"
         app:layout_constraintStart_toEndOf="@+id/comment"
         app:layout_constraintTop_toBottomOf="@+id/Post_image"
-        app:drawableLeftCompat="@drawable/ic_share" />
+        app:drawableLeftCompat="@drawable/ic_share"
+        app:drawableTint="@color/grey" />
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="wrap_content"

@@ -8,7 +8,6 @@
     <LinearLayout
         android:id="@+id/layoutofmessage"
         android:layout_width="wrap_content"
-        android:layout_marginEnd="10dp"
         android:background="@drawable/receiverchat"
         android:orientation="horizontal"
         android:layout_height="wrap_content">
@@ -18,12 +17,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-condensed"
-            android:paddingLeft="9dp"
+            android:paddingStart="25dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
             android:text="sender Message"
-            android:textColor="@color/black"
-            android:textSize="20sp">
+            android:textColor="@color/grey"
+            android:textSize="20sp"
+            android:gravity="end">
 
         </TextView>
 
@@ -31,7 +31,7 @@
             android:id="@+id/timeofmessagesr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="7dp"
+            android:padding="6dp"
             android:textColor="@color/black"
             android:textSize="10sp">
 

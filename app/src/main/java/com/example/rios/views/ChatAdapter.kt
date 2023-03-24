@@ -81,7 +81,6 @@ class ChatAdapter(
 
     }
 
-
     override fun onDataChanged() {
         // Scroll to the bottom when new data is added
         if (itemCount > 0) {
