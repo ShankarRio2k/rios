@@ -9,6 +9,7 @@
         android:id="@+id/layoutofmessage"
         android:layout_width="wrap_content"
         android:layout_marginEnd="10dp"
+        android:background="@drawable/receiverchat"
         android:orientation="horizontal"
         android:layout_height="wrap_content">
 
@@ -22,7 +23,7 @@
             android:paddingBottom="2dp"
             android:text="sender Message"
             android:textColor="@color/black"
-            android:textSize="18sp">
+            android:textSize="20sp">
 
         </TextView>
 
