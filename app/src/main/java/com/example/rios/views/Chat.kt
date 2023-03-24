@@ -42,9 +42,9 @@ class Chat() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         SenderRoom = newUser.id + FirebaseUtils.firebaseAuth.currentUser!!.uid
         ReceiverRoom = FirebaseUtils.firebaseAuth.currentUser!!.uid + newUser.id
-
         Room = SenderRoom
 
         val currentMessages = ArrayList<ChatMessage>()
@@ -52,70 +52,72 @@ class Chat() : Fragment() {
         chatRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         chatRecyclerView.adapter = messageAdapter
 
-        db = FirebaseFirestore.getInstance()
+        val db = FirebaseFirestore.getInstance()
         val settings = FirebaseFirestoreSettings.Builder()
             .setPersistenceEnabled(true)
             .build()
         db.firestoreSettings = settings
 
-       db.collection("chat").document(Room).collection("messages")
-            .orderBy("currenttime").get()
-            .addOnSuccessListener { documents ->
-                if (documents != null) {
-                    currentMessages.clear()
-                    for (document in documents) {
-                        Log.d(TAG, "${document.id} => ${document.data}")
-                        currentMessages.add(
-                            ChatMessage(
-                                message = document.data["message"].toString(),
-                                currenttime = document.data["currenttime"].toString(),
-                                senderid = document.data["senderid"].toString(),
-                                room = SenderRoom
-                            )
-                        )
-                    }
-                    messageAdapter.notifyDataSetChanged()
-                } else {
-                    Log.d(TAG, "No such document")
+        // Retrieve messages from Firestore and update the chat
+        db.collection("chat").document(Room).collection("messages")
+            .orderBy("currenttime")
+            .addSnapshotListener { value, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    return@addSnapshotListener
                 }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "get failed with ", exception)
-            }
 
-        //        adapter = ChatAdapter(currentUserId)
-
+                currentMessages.clear()
+                for (doc in value!!) {
+                    Log.d(TAG, "${doc.id} => ${doc.data}")
+                    val message = ChatMessage(
+                        message = doc["message"].toString(),
+                        currenttime = doc["currenttime"].toString(),
+                        senderid = doc["senderid"].toString(),
+                        room = SenderRoom
+                    )
+                    currentMessages.add(message)
+                }
+                messageAdapter.notifyDataSetChanged()
+            }
 
         chatSendButton.setOnClickListener {
+            val messageText = chatInputEditText.text.toString().trim()
+            if (messageText.isNotEmpty()) {
                 val currentMessage = ChatMessage(
-                    message = chatInputEditText.text.toString().trim(),
+                    message = messageText,
                     currenttime = Timestamp.now().toString(),
                     senderid = currentUserId,
                     room = SenderRoom
                 )
-                if (currentMessage.message?.isNotEmpty() == true) {
-                    // Send the message
-                    val message = hashMapOf(
-                        "message" to currentMessage.message,
-                        "currenttime" to currentMessage.currenttime,
-                        "senderid" to currentMessage.senderid,
-                        "room" to currentMessage.room
-                    )
-                    FirebaseFirestore.getInstance().collection("chat").document(SenderRoom)
-                        .collection("messages")
-                        .add(message)
-                        .addOnSuccessListener {
-                            FirebaseFirestore.getInstance().collection("chat")
-                                .document(ReceiverRoom)
-                                .collection("messages")
-                                .add(message)
-                        }
-                        .addOnFailureListener {
+                val message = hashMapOf(
+                    "message" to currentMessage.message,
+                    "currenttime" to currentMessage.currenttime,
+                    "senderid" to currentMessage.senderid,
+                    "room" to currentMessage.room
+                )
+                // Send the message to SenderRoom
+                chatInputEditText.text?.clear()
+                db.collection("chat").document(SenderRoom)
+                    .collection("messages")
+                    .add(message)
+                    .addOnSuccessListener {
+                        // Send the same message to ReceiverRoom
+                        db.collection("chat")
+                            .document(ReceiverRoom)
+                            .collection("messages")
+                            .add(message)
+                            .addOnSuccessListener {
 
-                        }
-
-                    chatInputEditText.text?.clear()
-                }
+                            }
+                            .addOnFailureListener {
+                                Log.e(TAG, "Error sending message to ReceiverRoom", it)
+                            }
+                    }
+                    .addOnFailureListener {
+                        Log.e(TAG, "Error sending message to SenderRoom", it)
+                    }
             }
         }
     }
+}

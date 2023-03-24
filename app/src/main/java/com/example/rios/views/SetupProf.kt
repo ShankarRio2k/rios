@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.rios.R
@@ -74,7 +75,6 @@ class SetupProf : AppCompatActivity() {
             "bio" to bio,
             "profilePic" to profilePic
         )
-
         val storageRef = FirebaseStorage.getInstance().reference
 
         val imageRef = storageRef.child("profiles/${id}/profilePic")
