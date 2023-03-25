@@ -17,12 +17,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-condensed"
-            android:paddingStart="25dp"
+            android:paddingStart="15dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
             android:text="sender Message"
             android:textColor="@color/grey"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:gravity="end">
 
         </TextView>
