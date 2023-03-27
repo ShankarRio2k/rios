@@ -40,10 +40,17 @@
         android:id="@+id/chatInputLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/sendImage"
+            android:src="@drawable/photo"
+            android:layout_width="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_height="50dp">
+        </ImageView>
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/chatInput"
             android:layout_width="match_parent"
@@ -53,7 +60,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/chatInputEditText"
-                android:layout_width="290dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/chatinput"
                 android:textColor="@color/black"

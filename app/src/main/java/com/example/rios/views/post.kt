@@ -9,8 +9,8 @@ data class post(
     val caption: String,
     val imageUrl: String,
     val timestamp: Timestamp?,
+    val likes: List<String> = emptyList(),
     var profileUrl: String?
 ) {
-    constructor() : this("", "", "", "", "", timestamp = null, profileUrl = "")
-
+    constructor() : this("", "", "", "", "", timestamp = null, emptyList(), profileUrl = "")
 }
