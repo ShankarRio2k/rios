@@ -1,19 +1,14 @@
 package com.example.rios.views
 
-class ChatMessage {
-    var message: String? = null
-    var currenttime: String? = null
-    var senderid: String? = null
-    var room: String? = null
-    var image: String? = null // new property for the image
+import android.net.Uri
 
-    constructor() {}
+class ChatMessage(
+    var message: String?,
+    var currenttime: String?,
+    var senderid: String?,
+    var room: String?,// new property for the image
+    var image: Uri?
+) {
 
-    constructor(message: String?, currenttime: String?, senderid: String?, room: String?, image: String?) {
-        this.message = message
-        this.currenttime = currenttime
-        this.senderid = senderid
-        this.room = room
-        this.image = image
-    }
+
 }

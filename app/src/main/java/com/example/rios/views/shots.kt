@@ -24,6 +24,12 @@ class shots : Fragment() {
     }
 
     companion object {
-
-            }
+        fun newInstance(title: String): shots {
+            val fragment = shots()
+            val args = Bundle()
+            args.putString("shots", title)
+            fragment.arguments = args
+            return fragment
+        }
     }
+}

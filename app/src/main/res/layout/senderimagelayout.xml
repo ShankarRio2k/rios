@@ -8,7 +8,7 @@
         android:id="@+id/sentimage"
         android:layout_gravity="end"
         android:layout_width="140dp"
-        android:layout_height="wrap_content">
+        android:layout_height="200dp">
 
     </ImageView>
 </LinearLayout>

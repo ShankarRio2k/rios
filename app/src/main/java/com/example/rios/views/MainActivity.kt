@@ -2,18 +2,22 @@ package com.example.rios.views
 
 import android.content.Intent
 import android.media.Image
+import android.net.wifi.p2p.nsd.WifiP2pUpnpServiceRequest.newInstance
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.example.rios.R
-import com.example.rios.utils.Extensions.toast
-import com.example.rios.utils.FirebaseUtils.firebaseAuth
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.analytics.FirebaseAnalytics
-import kotlinx.android.synthetic.main.activity_main.*
+
+
 
 private var mFirebaseAnalytics: FirebaseAnalytics? = null
 
@@ -25,33 +29,50 @@ class MainActivity : AppCompatActivity() {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         var viewPager: ViewPager = findViewById(R.id.viewpager)
         var tabLayout: TabLayout = findViewById(R.id.tablayou)
-            val adapter = MyPagerAdapter(supportFragmentManager)
-            viewPager.adapter = adapter
-            tabLayout.setupWithViewPager(viewPager)
-        }
-        class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-            private val pages = listOf(
-                Page(R.drawable.ic_baseline_chat_bubble_outline_24,"Talks", talks()),
-                Page(R.drawable.ic_baseline_surfing_24,"surf", surf()),
-                Page(R.drawable.ic_baseline_play_arrow_24,"Shots", shots()),
-//                Page(R.drawable.setting,"", shots()),
-            )
+        val adapter = PagerAdapter(supportFragmentManager)
+        viewPager.adapter = adapter
+        tabLayout.setupWithViewPager(viewPager)
 
-            override fun getItem(position: Int): Fragment {
-                val page = pages[position]
-                page.fragment.arguments = Bundle().apply {
-                    putInt("imageId", page.imageId)
-                }
-                return page.fragment
-            }
+        // Set the titles for the first three tabs
+        tabLayout.getTabAt(0)?.text = "Talks"
+        tabLayout.getTabAt(1)?.text = "Surf"
+        tabLayout.getTabAt(2)?.text = "Shots"
 
-            override fun getPageTitle(position: Int): CharSequence = pages[position].title
-
-            override fun getCount(): Int = pages.size
-        }
-
-        data class Page(val imageId: Int,val title: String, val fragment: Fragment)
+        // Set a custom view for the fourth tab with a smaller icon
+        val tab = tabLayout.getTabAt(3)
+        tab?.setCustomView(R.layout.settingstab)
+        // Set the icon for the fourth tab
+        val tabIcon = tab?.customView?.findViewById<ImageView>(R.id.tab_icon)
+        tabIcon?.setImageResource(R.drawable.setting)
     }
+
+    private class PagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+
+        override fun getCount(): Int = 4
+
+        override fun getItem(position: Int): Fragment {
+            // Return a Fragment for each position
+            return when (position) {
+                0 -> talks.newInstance("Talks")
+                1 -> surf.newInstance("Surf")
+                2 -> shots.newInstance("Shots")
+                else -> settings.newInstance("Settings")
+            }
+        }
+
+        override fun getPageTitle(position: Int): CharSequence? {
+            // Set the title for each tab
+            return when (position) {
+                0 -> "Tab 1"
+                1 -> "Tab 2"
+                2 -> "Tab 3"
+                else -> null
+            }
+        }
+    }
+}
+
+
 
 
 //        /        btnSignOut.setOnClickListener {

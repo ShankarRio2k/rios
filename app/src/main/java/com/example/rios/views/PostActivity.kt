@@ -31,7 +31,6 @@ import java.util.*
 
 class PostActivity : AppCompatActivity() {
 
-    private val PICK_IMAGE = 123
     private lateinit var close: ImageView
     private lateinit var imgadded: ImageView
     private lateinit var description: EditText
@@ -39,8 +38,6 @@ class PostActivity : AppCompatActivity() {
     private lateinit var firebaseStorage: FirebaseStorage
     private lateinit var storageReference: StorageReference
     private lateinit var firebaseFirestore: FirebaseFirestore
-    private var ImageUriAccesstoken: String? = null
-    private lateinit var imagepath: Uri
     var imageurl: String? = null
     private lateinit var _imageUri: Uri
     private lateinit var launcher: ActivityResultLauncher<Intent>
@@ -60,7 +57,6 @@ class PostActivity : AppCompatActivity() {
         firebaseFirestore = FirebaseFirestore.getInstance()
         firebaseAuth = FirebaseAuth.getInstance()
 
-//        _imageUri = MutableLiveData()
 
         close.setOnClickListener {
             finish()
@@ -116,8 +112,6 @@ class PostActivity : AppCompatActivity() {
                 map["timestamp"] = Timestamp.now()
                 map["caption"] = description.text.toString()
                 map["userId"] = firebaseAuth.currentUser?.uid.toString()
-//                map["profileUrl"]  = firebaseAuth.currentUser!!.photoUrl.toString()
-//                map["username"] = firebaseAuth.currentUser!!.displayName.toString()
                 Log.d("PostActivity", "uploadimage: ramuda")
                 ref.set(map).addOnSuccessListener {
                     Toast.makeText(this@PostActivity, "map added", Toast.LENGTH_SHORT).show()

@@ -45,39 +45,39 @@ class Chat() : Fragment() {
 
                 val imageRef = storageRef.child("images/msgimages")
                 imageRef.putFile(it).addOnSuccessListener {
-                        imageRef.downloadUrl.addOnSuccessListener { imageUrl ->
-                            val currentMessage = ChatMessage(
-                                message = "",
-                                currenttime = Timestamp.now().toString(),
-                                senderid = currentUserId,
-                                room = SenderRoom,
-                                image = imageUrl.toString()
-                            )
-                            val message = hashMapOf(
-                                "message" to currentMessage.message,
-                                "currenttime" to currentMessage.currenttime,
-                                "senderid" to currentMessage.senderid,
-                                "room" to currentMessage.room,
-                                "image" to currentMessage.image
-                            )
+                    imageRef.downloadUrl.addOnSuccessListener { imageUrl ->
+                        val currentMessage = ChatMessage(
+                            message = "",
+                            currenttime = Timestamp.now().toString(),
+                            senderid = currentUserId,
+                            room = SenderRoom,
+                            image = imageUrl
+                        )
+                        val message = hashMapOf(
+                            "message" to currentMessage.message,
+                            "currenttime" to currentMessage.currenttime,
+                            "senderid" to currentMessage.senderid,
+                            "room" to currentMessage.room,
+                            "image" to currentMessage.image
+                        )
 
-                            db.collection("chat").document(SenderRoom).collection("messages")
-                                .add(message).addOnSuccessListener {
-                                    // Send the same message to ReceiverRoom
-                                    db.collection("chat").document(ReceiverRoom)
-                                        .collection("messages").add(message).addOnSuccessListener {
+                        db.collection("chat").document(SenderRoom).collection("messages")
+                            .add(message).addOnSuccessListener {
+                                // Send the same message to ReceiverRoom
+                                db.collection("chat").document(ReceiverRoom)
+                                    .collection("messages").add(message).addOnSuccessListener {
 
-                                        }.addOnFailureListener {
-                                            Log.e(TAG, "Error sending message to ReceiverRoom", it)
-                                        }
-                                }.addOnFailureListener {
-                                    Log.e(TAG, "Error sending message to SenderRoom", it)
-                                }
-                        }
-                    }.addOnFailureListener {
-                        Log.w(ContentValues.TAG, "Error uploading profile picture", it)
-//                    saveProfileDataToFirestore(profileMap)
+                                    }.addOnFailureListener {
+                                        Log.e(TAG, "Error sending message to ReceiverRoom", it)
+                                    }
+                            }.addOnFailureListener {
+                                Log.e(TAG, "Error sending message to SenderRoom", it)
+                            }
                     }
+                }.addOnFailureListener {
+                    Log.w(ContentValues.TAG, "Error uploading profile picture", it)
+//                    saveProfileDataToFirestore(profileMap)
+                }
             }
         }
 
@@ -119,7 +119,7 @@ class Chat() : Fragment() {
                         currenttime = doc["currenttime"].toString(),
                         senderid = doc["senderid"].toString(),
                         room = SenderRoom,
-                        image = doc["image"].toString()
+                        image = (if (doc["image"] != null) Uri.parse(doc["image"].toString()) else null)
                     )
                     currentMessages.add(message)
                 }
@@ -140,7 +140,7 @@ class Chat() : Fragment() {
                     currenttime = Timestamp.now().toString(),
                     senderid = currentUserId,
                     room = SenderRoom,
-                    image = ""
+                    image = null
                 )
                 val message = hashMapOf(
                     "message" to currentMessage.message,

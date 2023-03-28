@@ -3,6 +3,7 @@ package com.example.rios.views
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.service.controls.ControlsProviderService.TAG
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -86,7 +87,12 @@ class surf : Fragment() {
     }
 
     companion object {
-        private const val TAG = "SurfFragment"
+        fun newInstance(title: String): surf {
+            val fragment = surf()
+            val args = Bundle()
+            args.putString("surf", title)
+            fragment.arguments = args
+            return fragment
+        }
     }
-
 }

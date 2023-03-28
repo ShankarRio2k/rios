@@ -8,7 +8,7 @@
         android:id="@+id/receiveimage"
         android:layout_gravity="start"
         android:layout_width="140dp"
-        android:layout_height="wrap_content">
+        android:layout_height="200dp">
 
     </ImageView>
 </LinearLayout>

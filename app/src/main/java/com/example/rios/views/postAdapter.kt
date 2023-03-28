@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import com.example.rios.utils.Zoomimage
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -32,24 +33,46 @@ class postAdapter(private val context: Context, private val posts: List<post>) :
     }
 
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val postImageView: ImageView = itemView.findViewById(R.id.Post_image)
+        private val postImageView: Zoomimage = itemView.findViewById(R.id.Post_image)
         private val profilePicture: CircleImageView = itemView.findViewById(R.id.profile_image)
         private val usernameTextView: TextView = itemView.findViewById(R.id.userName)
         private val captionTextView: TextView = itemView.findViewById(R.id.about)
+        private val likeButton: ImageView = itemView.findViewById(R.id.likebutton)
+        private val likesTextView: TextView = itemView.findViewById(R.id.likes)
 //        private val timestampTextView: TextView = itemView.findViewById(R.id.like)
 
         fun bind(post: post) {
             Glide.with(context)
                 .load(post.imageUrl)
                 .into(postImageView)
-               Glide.with(context)
+            Glide.with(context)
                 .load(post.profileUrl)
                 .into(profilePicture)
             usernameTextView.text = post.username
             captionTextView.text = post.caption
+            likesTextView.text = post.likes.size.toString()
+
+            if (post.isLiked) {
+                likeButton.setImageResource(R.drawable.heart)
+            } else {
+                likeButton.setImageResource(R.drawable.favorite)
+            }
+
+            likeButton.setOnClickListener {
+                post.isLiked = !post.isLiked
+                if (post.isLiked) {
+                    post.likes+1
+                    likeButton.setImageResource(R.drawable.heart)
+                } else {
+                    post.likes-1
+                    likeButton.setImageResource(R.drawable.favorite)
+                }
+                notifyItemChanged(adapterPosition)
+            }
+        }
 //            timestampTextView.text = post.timestamp.toString()
 //                SimpleDateFormat("dd MM yyyy", Locale.getDefault())
 //                .format(post.timestamp)
-        }
     }
 }
+

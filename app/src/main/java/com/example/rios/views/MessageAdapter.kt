@@ -69,11 +69,9 @@ class MessageAdapter(val context: Context, val messageList: ArrayList<ChatMessag
     override fun getItemViewType(position: Int): Int {
         val currentMessage = messageList[position]
         return when {
-            currentMessage.senderid == FirebaseAuth.getInstance().currentUser?.uid && currentMessage.image!!.endsWith(
-                ".jpg"
-            ) -> ITEM_IMAGE_SENT
+            currentMessage.senderid == FirebaseAuth.getInstance().currentUser?.uid && currentMessage.image != null -> ITEM_IMAGE_SENT
             currentMessage.senderid == FirebaseAuth.getInstance().currentUser?.uid -> ITEM_SENT
-            currentMessage.image!!.endsWith(".jpg") -> ITEM_IMAGE_RECEIVE
+            currentMessage.image != null -> ITEM_IMAGE_RECEIVE
             else -> ITEM_RECEIVE
         }
     }

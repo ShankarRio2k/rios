@@ -46,24 +46,55 @@ class talks : Fragment() {
             .build()
         db.firestoreSettings = settings
 
+//        val currentUser = auth.currentUser
+//        if (currentUser != null) {
+//            Log.d("talks", "Current user ID: ${currentUser.uid}")
+//            db.collection("profiles")
+//                .whereNotEqualTo("id", currentUser.uid) // exclude current user
+//                .get()
+//                .addOnSuccessListener { result ->
+//                    for (document in result) {
+//                        val user = document.toObject(User::class.java)
+//                        users.add(user)
+//                    }
+//                    userAdapter.notifyDataSetChanged()
+//                }
+//                .addOnFailureListener { exception ->
+//                    Log.w("talks", "Error getting users", exception)
+//                }
+//        }
+
+        return view
+    }
+    override fun onStart() {
+        super.onStart()
+
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            Log.d("talks", "Current user ID: ${currentUser.uid}")
             db.collection("profiles")
                 .whereNotEqualTo("id", currentUser.uid) // exclude current user
-                .get()
-                .addOnSuccessListener { result ->
-                    for (document in result) {
+                .addSnapshotListener { snapshot, exception ->
+                    if (exception != null) {
+                        Log.w("talks", "Error getting users", exception)
+                        return@addSnapshotListener
+                    }
+                    users.clear()
+                    for (document in snapshot!!) {
                         val user = document.toObject(User::class.java)
                         users.add(user)
                     }
                     userAdapter.notifyDataSetChanged()
                 }
-                .addOnFailureListener { exception ->
-                    Log.w("talks", "Error getting users", exception)
-                }
         }
+    }
 
-        return view
+    companion object {
+        fun newInstance(title: String): talks {
+            val fragment = talks()
+            val args = Bundle()
+            args.putString("talks", title)
+            fragment.arguments = args
+            return fragment
+        }
     }
 }
