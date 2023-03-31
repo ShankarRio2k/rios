@@ -9,11 +9,26 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerofuser"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:itemCount="1000"
-        android:layout_above="@+id/signout"
+        android:layout_height="wrap_content"
+        tools:itemCount="5"
         tools:listitem="@layout/chatitem" />
 
+    <TextView
+        android:id="@+id/sug_text"
+        android:textStyle="bold"
+        android:padding="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recyclerofuser"
+        android:text="Suggested" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerofsuggesteduser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sug_text"
+        tools:itemCount="5"
+        tools:listitem="@layout/suggested_users" />
 
 
 </RelativeLayout>

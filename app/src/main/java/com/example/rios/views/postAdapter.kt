@@ -1,7 +1,6 @@
 package com.example.rios.views
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +10,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.rios.R
-import com.google.firebase.firestore.FirebaseFirestore
+import com.example.rios.model.post
 import de.hdodenhof.circleimageview.CircleImageView
-import java.text.SimpleDateFormat
-import java.util.*
 
 class postAdapter(private val context: Context, private val posts: List<post>) :
     RecyclerView.Adapter<postAdapter.PostViewHolder>() {

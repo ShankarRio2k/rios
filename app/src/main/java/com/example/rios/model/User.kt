@@ -1,4 +1,4 @@
-package com.example.rios.views
+package com.example.rios.model
 
 import java.net.URL
 

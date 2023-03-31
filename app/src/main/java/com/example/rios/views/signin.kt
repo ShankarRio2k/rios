@@ -59,5 +59,12 @@ class signin : AppCompatActivity() {
             }
         }
     }
-
+    override fun onStart() {
+        super.onStart()
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            startActivity(Intent(this@signin, MainActivity::class.java))
+            finish()
+        }
+    }
 }

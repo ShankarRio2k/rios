@@ -1,21 +1,18 @@
 package com.example.rios.views
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.service.controls.ControlsProviderService.TAG
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rios.databinding.FragmentSurfBinding
+import com.example.rios.model.post
 import com.example.rios.utils.FirebaseUtils.firebaseAuth
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 

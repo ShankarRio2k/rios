@@ -1,7 +1,6 @@
 package com.example.rios.views
 
 import android.content.ContentValues
-import android.content.ContentValues.TAG
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -13,14 +12,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rios.R
+import com.example.rios.model.ChatMessage
+import com.example.rios.model.User
 import com.example.rios.utils.FirebaseUtils
-import com.example.rios.utils.FirebaseUtils.firebaseAuth
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.*
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.synthetic.main.activity_setup_prof.*
 import kotlinx.android.synthetic.main.fragment_chat.*
 
 class Chat() : Fragment() {

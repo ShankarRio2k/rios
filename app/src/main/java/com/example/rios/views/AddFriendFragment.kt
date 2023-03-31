@@ -2,10 +2,10 @@ package com.example.rios.views
 
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rios.R
@@ -14,10 +14,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 
-class talks : Fragment() {
+class AddFriendFragment : Fragment() {
     private lateinit var db: FirebaseFirestore
     private lateinit var userAdapter: UserAdapter
-    private lateinit var suggestedAdapter: SuggestedAdapter
     private lateinit var users: MutableList<User>
     private val auth = FirebaseAuth.getInstance()
 
@@ -25,19 +24,13 @@ class talks : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_talks, container, false)
+        val view = inflater.inflate(R.layout.fragment_add_friend, container, false)
         users = mutableListOf()
         userAdapter = UserAdapter(requireContext(), users)
-        suggestedAdapter = SuggestedAdapter(requireContext(),users)
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerofuser)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.suggestions)
         recyclerView?.layoutManager = LinearLayoutManager(activity)
         recyclerView?.adapter = userAdapter
-
-
-        val recyclerViewofSuggestedAdapter = view.findViewById<RecyclerView>(R.id.recyclerofsuggesteduser)
-        recyclerViewofSuggestedAdapter?.layoutManager = LinearLayoutManager(activity)
-        recyclerViewofSuggestedAdapter?.adapter = suggestedAdapter
 
         db = FirebaseFirestore.getInstance()
         val settings = FirebaseFirestoreSettings.Builder()
@@ -69,14 +62,11 @@ class talks : Fragment() {
         super.onStart()
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            db.collection("users").document(currentUser.uid).collection("friends").addSnapshotListener { snapshot, exception ->
-
-            }
             db.collection("profiles")
                 .whereNotEqualTo("id", currentUser.uid) // exclude current user
                 .addSnapshotListener { snapshot, exception ->
                     if (exception != null) {
-                        Log.w("talks", "Error getting users", exception)
+                        Log.w("friends", "Error getting users", exception)
                         return@addSnapshotListener
                     }
                     users.clear()
