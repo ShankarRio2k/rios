@@ -10,7 +10,6 @@
         android:id="@+id/recyclerofuser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:itemCount="5"
         tools:listitem="@layout/chatitem" />
 
     <TextView
@@ -27,7 +26,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/sug_text"
-        tools:itemCount="5"
         tools:listitem="@layout/suggested_users" />
 
 

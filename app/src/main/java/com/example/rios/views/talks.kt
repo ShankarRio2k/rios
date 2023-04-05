@@ -13,13 +13,20 @@ import com.example.rios.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.Source
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class talks : Fragment() {
     private lateinit var db: FirebaseFirestore
     private lateinit var userAdapter: UserAdapter
     private lateinit var suggestedAdapter: SuggestedAdapter
     private lateinit var users: MutableList<User>
+    private lateinit var Sugestedusers: MutableList<User>
     private val auth = FirebaseAuth.getInstance()
+    val currentUser = auth.currentUser
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,15 +34,20 @@ class talks : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_talks, container, false)
         users = mutableListOf()
+        Sugestedusers = mutableListOf()
         userAdapter = UserAdapter(requireContext(), users)
-        suggestedAdapter = SuggestedAdapter(requireContext(),users)
+        suggestedAdapter = SuggestedAdapter(requireContext(), Sugestedusers) {
+            users.add(it)
+            userAdapter.notifyDataSetChanged()
+            getSuggestedUsers()
+        }
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerofuser)
         recyclerView?.layoutManager = LinearLayoutManager(activity)
         recyclerView?.adapter = userAdapter
 
-
-        val recyclerViewofSuggestedAdapter = view.findViewById<RecyclerView>(R.id.recyclerofsuggesteduser)
+        val recyclerViewofSuggestedAdapter =
+            view.findViewById<RecyclerView>(R.id.recyclerofsuggesteduser)
         recyclerViewofSuggestedAdapter?.layoutManager = LinearLayoutManager(activity)
         recyclerViewofSuggestedAdapter?.adapter = suggestedAdapter
 
@@ -44,47 +56,78 @@ class talks : Fragment() {
             .setPersistenceEnabled(true)
             .build()
         db.firestoreSettings = settings
-
-//        val currentUser = auth.currentUser
-//        if (currentUser != null) {
-//            Log.d("talks", "Current user ID: ${currentUser.uid}")
-//            db.collection("profiles")
-//                .whereNotEqualTo("id", currentUser.uid) // exclude current user
-//                .get()
-//                .addOnSuccessListener { result ->
-//                    for (document in result) {
-//                        val user = document.toObject(User::class.java)
-//                        users.add(user)
-//                    }
-//                    userAdapter.notifyDataSetChanged()
-//                }
-//                .addOnFailureListener { exception ->
-//                    Log.w("talks", "Error getting users", exception)
-//                }
-//        }
-
         return view
     }
-    override fun onStart() {
-        super.onStart()
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            db.collection("users").document(currentUser.uid).collection("friends").addSnapshotListener { snapshot, exception ->
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (currentUser != null) {
+
+            GlobalScope.launch {
+                getFriends()
+                getSuggestedUsers()
             }
-            db.collection("profiles")
-                .whereNotEqualTo("id", currentUser.uid) // exclude current user
-                .addSnapshotListener { snapshot, exception ->
-                    if (exception != null) {
-                        Log.w("talks", "Error getting users", exception)
-                        return@addSnapshotListener
+        }
+
+        // Notify the userAdapter with the latest data
+        userAdapter.notifyDataSetChanged()
+    }
+
+    private fun getFriends() {
+
+        currentUser?.uid?.let {
+            db.collection("users").document(it)
+                .collection("friends").get(Source.SERVER)
+                .addOnSuccessListener { friendSnapshot ->
+                    val friendIds = friendSnapshot.documents.map { it.id }
+                    if (friendIds.isNotEmpty()) {
+                        db.collection("profiles")
+                            .whereNotEqualTo("id", currentUser.uid)
+                            .whereIn("id", friendIds)
+                            .addSnapshotListener { snapshot, exception ->
+                                if (exception != null) {
+                                    Log.w("talks", "Error getting users", exception)
+                                    return@addSnapshotListener
+                                }
+                                users.clear()
+                                for (document in snapshot!!) {
+                                    val user = document.toObject(User::class.java)
+                                    users.add(user)
+                                }
+                                userAdapter.notifyDataSetChanged()
+                            }
                     }
-                    users.clear()
-                    for (document in snapshot!!) {
-                        val user = document.toObject(User::class.java)
-                        users.add(user)
-                    }
-                    userAdapter.notifyDataSetChanged()
+                }.addOnFailureListener { exception ->
+                    Log.w("talks", "Error getting friends", exception)
+                }
+        }
+
+    }
+
+    private fun getSuggestedUsers() {
+        currentUser?.uid?.let {
+            db.collection("users").document(it).collection("friends").get()
+                .addOnSuccessListener { friendSnapshot ->
+                    val friendIds: MutableList<String> =
+                        friendSnapshot.documents.map { it.id } as MutableList
+                    friendIds.add(friendIds.size, currentUser.uid!!)
+
+                    db.collection("profiles")
+                        .whereNotIn("id", friendIds)
+                        .addSnapshotListener { snapshot, exception ->
+                            if (exception != null) {
+                                Log.w("talks", "Error getting users", exception)
+                                return@addSnapshotListener
+                            }
+                            Sugestedusers.clear()
+                            for (document in snapshot!!) {
+                                val user = document.toObject(User::class.java)
+                                Sugestedusers.add(user)
+                            }
+                            suggestedAdapter.notifyDataSetChanged()
+                        }
+                }.addOnFailureListener { exception ->
+                    Log.w("talks", "Error getting friends", exception)
                 }
         }
     }

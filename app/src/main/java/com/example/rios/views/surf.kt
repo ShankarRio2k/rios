@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rios.databinding.FragmentSurfBinding
 import com.example.rios.model.post
 import com.example.rios.utils.FirebaseUtils.firebaseAuth
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.Source
 
 
 class surf : Fragment() {
@@ -22,6 +24,9 @@ class surf : Fragment() {
     private lateinit var postAdapter: postAdapter
     private lateinit var posts: MutableList<post>
     private lateinit var binding: FragmentSurfBinding
+    val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+    val currentUser = auth.currentUser
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,42 +50,57 @@ class surf : Fragment() {
         }
 
         // Load the posts from Firestore
-        val db = FirebaseFirestore.getInstance()
-        db.collection("Posts")
-            .orderBy("timestamp", Query.Direction.DESCENDING)
-            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                if (firebaseFirestoreException != null) {
-                    Log.w(TAG, "Listen failed.", firebaseFirestoreException)
-                    return@addSnapshotListener
-                }
-                posts.clear()
-                val user: FirebaseUser? = firebaseAuth.currentUser
+        val friends = currentUser?.uid?.let {
+            db.collection("users").document(it)
+                .collection("friends").get(Source.SERVER)
+                .addOnSuccessListener { friendSnapshot ->
+                    val friendIds = friendSnapshot.documents.map { it.id }
 
-                // Add the new posts to the list
-                for (document in querySnapshot!!) {
-                    val post = document.toObject(post::class.java)
-                    if (post.userId == user?.uid) {
-                        post.profileUrl = user.photoUrl.toString()
-                        post.username = user.displayName
-                    } else {
-                        db.collection("profiles").document(post.userId).get()
-                            .addOnSuccessListener { documentSnapshot ->
-                                Log.d(TAG, "onViewCreated: " + documentSnapshot.data)
-                                if (documentSnapshot.exists()) {
-                                    post.profileUrl = documentSnapshot.getString("profilePic").toString()
-                                    post.username = documentSnapshot.getString("name").toString()
+                    db.collection("Posts")
+                        .orderBy("timestamp", Query.Direction.DESCENDING)
+                        .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                            if (firebaseFirestoreException != null) {
+                                Log.w(TAG, "Listen failed.", firebaseFirestoreException)
+                                return@addSnapshotListener
+                            }
+                            posts.clear()
+                            val user: FirebaseUser? = firebaseAuth.currentUser
+
+                            // Add the new posts to the list
+                            for (document in querySnapshot!!) {
+                                val post = document.toObject(post::class.java)
+                                if (post.userId != user?.uid && (post.userId == user?.uid || friendIds.contains(
+                                        post.userId
+                                    ))
+                                ) {
+                                    if (post.userId == user?.uid) {
+                                        post.profileUrl = user.photoUrl.toString()
+                                        post.username = user.displayName
+                                    } else {
+                                        db.collection("profiles").document(post.userId).get()
+                                            .addOnSuccessListener { documentSnapshot ->
+                                                Log.d(TAG, "onViewCreated: " + documentSnapshot.data
+                                                )
+                                                if (documentSnapshot.exists()) {
+                                                    post.profileUrl = documentSnapshot.getString("profilePic").toString()
+                                                    post.username = documentSnapshot.getString("name").toString()
+                                                }
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Log.e(TAG, "onViewCreated: ", e)
+
+                                            }
+                                    }
+                                    posts.add(post)
                                 }
                             }
-                            .addOnFailureListener { e ->
-                                Log.e(TAG, "onViewCreated: ", e)
+                            // Notify the adapter that the data has changed
+                            postAdapter.notifyDataSetChanged()
+                        }
 
-                            }
-                    }
-                    posts.add(post)
                 }
-                // Notify the adapter that the data has changed
-                postAdapter.notifyDataSetChanged()
-            }
+
+        }
     }
 
     companion object {
@@ -93,3 +113,5 @@ class surf : Fragment() {
         }
     }
 }
+
+

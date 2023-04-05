@@ -1,13 +1,16 @@
 package com.example.rios.views
 
-import android.content.ContentValues
+import android.content.*
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.Display.FLAG_SECURE
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -82,11 +85,14 @@ class Chat() : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+        activity?.window?.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         return inflater.inflate(R.layout.fragment_chat, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         SenderRoom = newUser.id + FirebaseUtils.firebaseAuth.currentUser!!.uid
         ReceiverRoom = FirebaseUtils.firebaseAuth.currentUser!!.uid + newUser.id
