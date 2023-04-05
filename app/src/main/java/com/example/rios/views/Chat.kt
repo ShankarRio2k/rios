@@ -135,6 +135,13 @@ class Chat() : Fragment() {
             imagePickerLauncher.launch("image/*")
         }
 
+        back.setOnClickListener {
+                val newFragment = talks() // Replace with the fragment you want to load
+                val transaction = requireFragmentManager().beginTransaction()
+                transaction.replace(R.id.inner_container, newFragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
 
         chatSendButton.setOnClickListener {
             val messageText = chatInputEditText.text.toString().trim()
@@ -170,3 +177,4 @@ class Chat() : Fragment() {
         }
     }
 }
+

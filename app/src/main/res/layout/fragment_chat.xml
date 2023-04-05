@@ -8,33 +8,38 @@
     android:focusable="true"
     tools:context=".views.Chat">
 
-    <ImageView
-        android:layout_width="37dp"
-        android:layout_height="37dp"
-        android:src="@drawable/left"
+    <LinearLayout
+        android:id="@+id/nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/chatRecyclerView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.98"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.004">
+        app:layout_constraintTop_toTopOf="parent">
 
-    </ImageView>
+        <ImageView
+            android:id="@+id/back"
+            android:src="@drawable/previous"
+            android:layout_marginLeft="3dp"
+            android:layout_margin="6dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:tint="@color/grey" />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="3dp"
         android:clipToPadding="false"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@id/chatInputLayout"
+        app:layout_constraintTop_toBottomOf="@id/nav"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:itemCount="10" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/chatInputLayout"

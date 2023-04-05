@@ -79,11 +79,15 @@ class surf : Fragment() {
                                     } else {
                                         db.collection("profiles").document(post.userId).get()
                                             .addOnSuccessListener { documentSnapshot ->
-                                                Log.d(TAG, "onViewCreated: " + documentSnapshot.data
+                                                Log.d(
+                                                    TAG,
+                                                    "onViewCreated: " + documentSnapshot.data
                                                 )
                                                 if (documentSnapshot.exists()) {
-                                                    post.profileUrl = documentSnapshot.getString("profilePic").toString()
-                                                    post.username = documentSnapshot.getString("name").toString()
+                                                    post.profileUrl =
+                                                        documentSnapshot.getString("profilePic").toString()
+                                                    post.username =
+                                                        documentSnapshot.getString("name").toString()
                                                 }
                                             }
                                             .addOnFailureListener { e ->
