@@ -1,4 +1,4 @@
-package com.example.rios.views
+package com.example.rios.adapter
 
 import android.content.Context
 import android.view.LayoutInflater

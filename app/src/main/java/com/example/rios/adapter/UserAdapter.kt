@@ -48,9 +48,22 @@ class UserAdapter(val context: Context, val users: List<User>) : RecyclerView.Ad
             // Handle any errors
         }
         holder.itemView.setOnClickListener {
+            val fragment = Chat(user)
             (context as FragmentActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.inner_container, Chat(user)).commit()
+                .replace(R.id.inner_container, fragment)
+                .addToBackStack(null) // Add the fragment to the back stack
+                .commit()
         }
+
+
+        holder.profileImage.setOnClickListener {
+            val fragment = profileFragment()
+            (context as FragmentActivity).supportFragmentManager.beginTransaction()
+                .replace(R.id.inner_container, fragment)
+                .addToBackStack(null) // Add the fragment to the back stack
+                .commit()
+        }
+
 
         holder.itemView.setOnLongClickListener {
             val dialogBuilder = AlertDialog.Builder(context)

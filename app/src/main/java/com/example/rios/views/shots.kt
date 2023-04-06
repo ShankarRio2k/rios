@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.rios.R
+import com.example.rios.databinding.ActivityCreateaccountBinding
+import com.example.rios.databinding.FragmentShotsBinding
 
 
 class shots : Fragment() {
-
+    private lateinit var binding: FragmentShotsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -16,7 +16,7 @@ android:layout_height="wrap_content">
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center_vertical"
-        android:elevation="6dp"
+        android:elevation="3dp"
         android:src="@drawable/profilepic"
         app:civ_border_color="@color/appColor"
         app:civ_border_overlay="true"
@@ -40,7 +40,7 @@ android:layout_height="wrap_content">
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/receiver"
+            android:id="@+id/typing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/usernlist"

@@ -19,6 +19,8 @@ import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.rios.R
+import com.example.rios.databinding.ActivityCreateaccountBinding
+import com.example.rios.databinding.ActivitySetupProfBinding
 import com.example.rios.utils.Extensions.toast
 import com.example.rios.utils.FirebaseUtils.firebaseAuth
 import com.google.firebase.auth.FirebaseAuth
@@ -33,6 +35,7 @@ import java.util.UUID
 class SetupProf : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private lateinit var binding: ActivitySetupProfBinding
     private lateinit var _imageUri: MutableLiveData<Uri>
 
     private val imagePickerLauncher =

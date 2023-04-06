@@ -80,8 +80,8 @@ class AddFriendFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(title: String): talks {
-            val fragment = talks()
+        fun newInstance(title: String): AddFriendFragment {
+            val fragment = AddFriendFragment()
             val args = Bundle()
             args.putString("talks", title)
             fragment.arguments = args

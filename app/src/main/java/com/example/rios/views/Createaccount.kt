@@ -6,6 +6,8 @@ import kotlinx.android.synthetic.main.activity_createaccount.*
 import android.os.Bundle
 import android.widget.EditText
 import com.example.rios.R
+import com.example.rios.databinding.ActivityCreateaccountBinding
+import com.example.rios.databinding.FragmentTalksBinding
 import com.example.rios.utils.Extensions.toast
 import com.example.rios.utils.FirebaseUtils.firebaseAuth
 import com.example.rios.utils.FirebaseUtils.firebaseUser
@@ -14,6 +16,7 @@ import com.google.firebase.auth.FirebaseUser
 class Createaccount : AppCompatActivity() {
     lateinit var userEmail: String
     lateinit var userPassword: String
+    private lateinit var binding: ActivityCreateaccountBinding
     lateinit var createAccountInputsArray: Array<EditText>
 
     override fun onCreate(savedInstanceState: Bundle?) {

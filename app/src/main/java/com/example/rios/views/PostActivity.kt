@@ -17,6 +17,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import com.example.rios.R
+import com.example.rios.databinding.ActivityCreateaccountBinding
+import com.example.rios.databinding.ActivityPostBinding
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -40,6 +42,7 @@ class PostActivity : AppCompatActivity() {
     private lateinit var firebaseFirestore: FirebaseFirestore
     var imageurl: String? = null
     private lateinit var _imageUri: Uri
+    private lateinit var binding: ActivityPostBinding
     private lateinit var launcher: ActivityResultLauncher<Intent>
 
     private lateinit var firebaseAuth: FirebaseAuth

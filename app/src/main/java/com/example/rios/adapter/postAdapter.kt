@@ -1,4 +1,4 @@
-package com.example.rios.views
+package com.example.rios.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -33,9 +33,9 @@ class postAdapter(private val context: Context, private val posts: List<post>) :
         private val postImageView: Zoomimage = itemView.findViewById(R.id.Post_image)
         private val profilePicture: CircleImageView = itemView.findViewById(R.id.profile_image)
         private val usernameTextView: TextView = itemView.findViewById(R.id.userName)
-        private val captionTextView: TextView = itemView.findViewById(R.id.about)
-        private val likeButton: ImageView = itemView.findViewById(R.id.likebutton)
-        private val likesTextView: TextView = itemView.findViewById(R.id.likes)
+        private val captionTextView: TextView = itemView.findViewById(R.id.post_description)
+        private val likeButton: ImageView = itemView.findViewById(R.id.post_like_icon)
+//        private val likesTextView: TextView = itemView.findViewById(R.id.likes)
 //        private val timestampTextView: TextView = itemView.findViewById(R.id.like)
 
         fun bind(post: post) {
@@ -47,7 +47,7 @@ class postAdapter(private val context: Context, private val posts: List<post>) :
                 .into(profilePicture)
             usernameTextView.text = post.username
             captionTextView.text = post.caption
-            likesTextView.text = post.likes.size.toString()
+//            likesTextView.text = post.likes.size.toString()
 
             if (post.isLiked) {
                 likeButton.setImageResource(R.drawable.heart)

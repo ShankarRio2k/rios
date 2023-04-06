@@ -15,10 +15,11 @@
 
         <TextView
             android:id="@+id/senndertext"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-condensed"
             android:padding="3dp"
+            android:paddingEnd="10dp"
             android:paddingStart="8dp"
             android:gravity="center"
             android:layout_marginEnd="2dp"

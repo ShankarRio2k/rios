@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.rios.adapter.postAdapter
 import com.example.rios.databinding.FragmentSurfBinding
 import com.example.rios.model.post
 import com.example.rios.utils.FirebaseUtils.firebaseAuth
