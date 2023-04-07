@@ -1,11 +1,14 @@
 package com.example.rios.views
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,11 +24,14 @@ class talks : Fragment() {
     private lateinit var userAdapter: UserAdapter
     private lateinit var suggestedAdapter: SuggestedAdapter
     private lateinit var users: MutableList<User>
-    private lateinit var viewmodel: Homeviewmodel
+    private val talksViewModel: Homeviewmodel by lazy {
+        ViewModelProvider(this).get(Homeviewmodel::class.java)
+    }
     private lateinit var suggestedUsers: MutableList<User>
     private val auth = FirebaseAuth.getInstance()
     private val currentUser = auth.currentUser
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,15 +42,16 @@ class talks : Fragment() {
         suggestedAdapter = SuggestedAdapter(requireContext(), suggestedUsers) {
             users.add(it)
             userAdapter.notifyDataSetChanged()
-            viewmodel.getSuggestedUsers()
             getSuggestedUsers()
+
         }
 
         val recyclerView = it.findViewById<RecyclerView>(R.id.recyclerofuser)
         recyclerView?.layoutManager = LinearLayoutManager(activity)
         recyclerView?.adapter = userAdapter
 
-        val recyclerViewofSuggestedAdapter = it.findViewById<RecyclerView>(R.id.recyclerofsuggesteduser)
+        val recyclerViewofSuggestedAdapter =
+            it.findViewById<RecyclerView>(R.id.recyclerofsuggesteduser)
         recyclerViewofSuggestedAdapter?.layoutManager = LinearLayoutManager(activity)
         recyclerViewofSuggestedAdapter?.adapter = suggestedAdapter
 
@@ -53,32 +60,39 @@ class talks : Fragment() {
             .setPersistenceEnabled(true)
             .build()
         db.firestoreSettings = settings
-        viewmodel = ViewModelProvider(this).get(Homeviewmodel::class.java)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (currentUser != null) {
-//            viewmodel.getFriends()
-//            viewmodel.getSuggestedUsers()
-            getFriends()
-            getSuggestedUsers()
+                getFriends()
+                getSuggestedUsers()
+//            getFriends()
+//            getSuggestedUsers()
         }
     }
 
     private fun getFriends() {
         currentUser?.uid?.let { uid ->
-            db.collection("users").document(uid).collection("friends").get()
-                .addOnSuccessListener { friendSnapshot ->
-                    val friendIds = friendSnapshot.documents.map { it.id }
-                    if (friendIds.isNotEmpty()) {
+            db.collection("users").document(uid).collection("friends")
+                .addSnapshotListener { friendSnapshot, e ->
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e)
+                        return@addSnapshotListener
+                    }
+                    val friendIds = friendSnapshot?.documents?.map { it.id }
+                    if (friendIds != null && friendIds.isNotEmpty()) {
                         db.collection("profiles")
                             .whereNotEqualTo("id", currentUser.uid)
                             .whereIn("id", friendIds)
-                            .get()
-                            .addOnSuccessListener { snapshot ->
+                            .addSnapshotListener { snapshot, e ->
+                                if (e != null) {
+                                    Log.w(TAG, "Listen failed.", e)
+                                    return@addSnapshotListener
+                                }
                                 users.clear()
-                                for (document in snapshot) {
+                                for (document in snapshot!!) {
                                     val user = document.toObject(User::class.java)
                                     users.add(user)
                                 }
@@ -93,16 +107,23 @@ class talks : Fragment() {
     private fun getSuggestedUsers() {
         currentUser?.uid?.let {
             val friendIds: MutableList<String> = mutableListOf()
-            db.collection("users").document(it).collection("friends").get()
-                .addOnSuccessListener { friendSnapshot ->
-                    friendIds.addAll(friendSnapshot.documents.map { it.id })
+            db.collection("users").document(it).collection("friends")
+                .addSnapshotListener { friendSnapshot, e ->
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e)
+                        return@addSnapshotListener
+                    }
+                    friendIds.addAll(friendSnapshot?.documents?.map { it.id } ?: listOf())
                     friendIds.add(friendIds.size, currentUser.uid!!)
                     db.collection("profiles")
                         .whereNotIn("id", friendIds)
-                        .get()
-                        .addOnSuccessListener { snapshot ->
+                        .addSnapshotListener { snapshot, e ->
+                            if (e != null) {
+                                Log.w(TAG, "Listen failed.", e)
+                                return@addSnapshotListener
+                            }
                             suggestedUsers.clear()
-                            for (document in snapshot) {
+                            for (document in snapshot!!) {
                                 val user = document.toObject(User::class.java)
                                 suggestedUsers.add(user)
                             }

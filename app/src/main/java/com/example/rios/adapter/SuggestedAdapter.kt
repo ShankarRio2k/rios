@@ -73,10 +73,13 @@ class SuggestedAdapter(
                     .addOnSuccessListener {
                         Toast.makeText(context, "Friend added successfully!", Toast.LENGTH_SHORT)
                             .show()
-                        /*  val newList = users
-                          newList.removeAt(position)
-                          users = newList
-                          notifyItemRemoved(position)*/
+//                        if (position < users.size) {
+//                            val newList = users.toMutableList()
+//                            newList.removeAt(position)
+//                            users = newList.toList() as MutableList<User>
+                            notifyItemRemoved(position)
+//                        }
+
                     }
                     .addOnFailureListener { exception ->
                         Toast.makeText(

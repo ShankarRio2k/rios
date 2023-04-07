@@ -104,35 +104,49 @@ class PostActivity : AppCompatActivity() {
             imgref.downloadUrl.addOnSuccessListener { uri ->
                 _imageUri = uri
                 Toast.makeText(this@PostActivity, "Uri get success", Toast.LENGTH_SHORT).show()
-            }.addOnCompleteListener { task ->
-                val downloaduri = task.result
-                imageurl = downloaduri.toString()
-                val Postid = UUID.randomUUID().toString()
-                val ref = firebaseFirestore.collection("Posts").document(Postid)
-                val map: MutableMap<String, Any> = HashMap()
-                map["postId"] = Postid
-                map["imageUrl"] = _imageUri
-                map["timestamp"] = Timestamp.now()
-                map["caption"] = description.text.toString()
-                map["userId"] = firebaseAuth.currentUser?.uid.toString()
-                Log.d("PostActivity", "uploadimage: ramuda")
-                ref.set(map).addOnSuccessListener {
-                    Toast.makeText(this@PostActivity, "map added", Toast.LENGTH_SHORT).show()
-                }.addOnFailureListener {
+
+                // Retrieve user's username and profile image URL from database
+                val userId = firebaseAuth.currentUser?.uid.toString()
+                val userRef = firebaseFirestore.collection("profiles").document(userId)
+                userRef.get().addOnSuccessListener { documentSnapshot ->
+                    val username = documentSnapshot.getString("name")
+                    val profileImageUrl = documentSnapshot.getString("profilePic")
+
+                    // Create map object with post data including username and profile image URL
+                    val Postid = UUID.randomUUID().toString()
+                    val ref = firebaseFirestore.collection("Posts").document(Postid)
+                    val map: MutableMap<String, Any> = HashMap()
+                    map["postId"] = Postid
+                    map["imageUrl"] = _imageUri
+                    map["timestamp"] = Timestamp.now()
+                    map["caption"] = description.text.toString()
+                    map["userId"] = userId
+                    username?.let {
+                        map["username"] = it
+                    }
+                    profileImageUrl?.let {
+                        map["profileUrl"] = it
+                    }
+
+                    ref.set(map).addOnSuccessListener {
+                        Toast.makeText(this@PostActivity, "map added", Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener {
+                        Toast.makeText(
+                            this@PostActivity,
+                            "map not added",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    pd.dismiss()
+                    finish()
+                }.addOnFailureListener { e ->
                     Toast.makeText(
                         this@PostActivity,
-                        "map not added",
+                        e.message,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                pd.dismiss()
-                finish()
-            }.addOnFailureListener { e ->
-                Toast.makeText(
-                    this@PostActivity,
-                    e.message,
-                    Toast.LENGTH_SHORT
-                ).show()
+
             }
         }
     }

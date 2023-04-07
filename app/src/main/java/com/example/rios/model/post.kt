@@ -8,7 +8,7 @@ data class post(
     val caption: String,
     val imageUrl: String,
     val timestamp: Timestamp?,
-    val likes: List<Int> = emptyList(),
+    var likes: List<Int> = emptyList(),
     var profileUrl: String?,
     var isLiked: Boolean = false // Add isLiked property with default value false
 ) {
