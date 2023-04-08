@@ -5,28 +5,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Add other views here -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerofuser"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/chatitem" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/sug_text"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/recyclerofuser"
-        android:text="Suggested" />
+<!--        <com.google.android.material.search.SearchBar-->
+<!--            android:id="@+id/search_view"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:iconifiedByDefault="false"-->
+<!--            android:queryHint="Search..."-->
+<!--            android:layout_margin="8dp" />-->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerofsuggesteduser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/sug_text"
-        tools:listitem="@layout/suggested_users" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerofuser"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/chatitem" />
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/sug_text"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_margin="8dp"-->
+<!--                        android:text="Suggested"-->
+<!--                        android:textSize="16sp" />-->
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerofsuggesteduser"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:listitem="@layout/suggested_users" />
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

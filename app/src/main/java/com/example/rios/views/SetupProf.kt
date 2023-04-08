@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import com.example.rios.R
 import com.example.rios.databinding.ActivityCreateaccountBinding
 import com.example.rios.databinding.ActivitySetupProfBinding
@@ -38,6 +39,7 @@ class SetupProf : AppCompatActivity() {
     private lateinit var binding: ActivitySetupProfBinding
     private lateinit var _imageUri: MutableLiveData<Uri>
 
+
     private val imagePickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
@@ -49,13 +51,13 @@ class SetupProf : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setup_prof)
-
+        val setupProfViewModel = ViewModelProvider(this).get(Homeviewmodel::class.java)
         firebaseAuth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
         _imageUri = MutableLiveData()
         val firebaseAuth = FirebaseAuth.getInstance()
 
-        saveprofile.setOnClickListener {
+        binding.saveprofile.setOnClickListener {
             val id = firebaseAuth.currentUser?.uid
             val name = getusername.text.toString()
             val bio = getuserbio.text.toString()
@@ -63,10 +65,13 @@ class SetupProf : AppCompatActivity() {
 //        if (firebaseAuth.currentUser.isAnonymous)
             if (id != null) {
                 saveProfileData(id, name, bio, profilePic)
+                setupProfViewModel.username = name as MutableLiveData<String>
+                setupProfViewModel.bio = bio as MutableLiveData<String>
+                setupProfViewModel.profileImageUrl = profilePic as MutableLiveData<String>
             }
         }
 
-        circularImageView.setOnClickListener {
+        binding.circularImageView.setOnClickListener {
             imagePickerLauncher.launch("image/*")
         }
     }

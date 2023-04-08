@@ -16,6 +16,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import com.example.rios.R
 import com.example.rios.databinding.ActivityCreateaccountBinding
 import com.example.rios.databinding.ActivityPostBinding
@@ -44,7 +45,9 @@ class PostActivity : AppCompatActivity() {
     private lateinit var _imageUri: Uri
     private lateinit var binding: ActivityPostBinding
     private lateinit var launcher: ActivityResultLauncher<Intent>
-
+    private val postViewModel: Homeviewmodel by lazy {
+        ViewModelProvider(this).get(Homeviewmodel::class.java)
+    }
     private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,9 +126,11 @@ class PostActivity : AppCompatActivity() {
                     map["userId"] = userId
                     username?.let {
                         map["username"] = it
+                        postViewModel.username.value = it
                     }
                     profileImageUrl?.let {
                         map["profileUrl"] = it
+                        postViewModel.profileImageUrl.value = it
                     }
 
                     ref.set(map).addOnSuccessListener {

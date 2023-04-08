@@ -32,6 +32,10 @@ class Homeviewmodel : ViewModel() {
     val posts: LiveData<List<post>>
         get() = _posts
 
+    var username = MutableLiveData<String>()
+    var bio = MutableLiveData<String>()
+    var profileImageUrl = MutableLiveData<String>()
+
     val friends: MutableLiveData<List<User>> by lazy {
         MutableLiveData<List<User>>().also {
             getFriends()
