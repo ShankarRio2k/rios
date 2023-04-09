@@ -15,19 +15,13 @@
         app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/addpost"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:baselineAlignBottom="true"
-        android:contentDescription="post"
-        app:layout_constraintBottom_toBottomOf="@+id/postRecyclerView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/add"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/postRecyclerView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976">
+        android:layout_width="50dp"
+        android:layout_height="50dp"/>
 
-    </com.google.android.material.floatingactionbutton.FloatingActionButton>
 </androidx.constraintlayout.widget.ConstraintLayout>

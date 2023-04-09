@@ -1,6 +1,7 @@
 package com.example.rios.views
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -32,6 +33,7 @@ class Homeviewmodel : ViewModel() {
     val posts: LiveData<List<post>>
         get() = _posts
 
+    var videouri = MutableLiveData<Uri>()
     var username = MutableLiveData<String>()
     var bio = MutableLiveData<String>()
     var profileImageUrl = MutableLiveData<String>()
