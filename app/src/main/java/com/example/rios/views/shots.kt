@@ -23,14 +23,6 @@ class shots : Fragment() {
     private val shotsViewmodel: Homeviewmodel by lazy {
         ViewModelProvider(this).get(Homeviewmodel::class.java)
     }
-    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        shotsViewmodel.videouri = uri as MutableLiveData<Uri>
-        val fragment = AddShotFragment() // create an instance of the AddShotFragment
-        (context as FragmentActivity).supportFragmentManager.beginTransaction()
-            .replace(R.id.shots_container, fragment)
-            .addToBackStack(null) // Add the fragment to the back stack
-            .commit()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,27 +34,20 @@ class shots : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.addvideo.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "video/*"
-            startActivityForResult(intent, REQUEST_CODE)
+            // Create an instance of the AddShotFragment
+            val addShotFragment = AddShotFragment()
+            val fragmentTransaction = parentFragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.shots_container, addShotFragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
         }
 
 
+
+
     }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val uri = data?.data
-            shotsViewmodel.videouri = uri as MutableLiveData<Uri>
-            val fragment = AddShotFragment() // create an instance of the AddShotFragment
-            (context as FragmentActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.shots_container, fragment)
-                .addToBackStack(null) // Add the fragment to the back stack
-                .commit()
-        }
-    }
+
 
     companion object {
         fun newInstance(title: String): shots {
