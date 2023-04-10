@@ -37,37 +37,36 @@ class SetupProf : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var binding: ActivitySetupProfBinding
-    private lateinit var _imageUri: MutableLiveData<Uri>
+    private var _imageUri: Uri? = null
 
 
     private val imagePickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
                 circularImageView.setImageURI(uri)
-                _imageUri.value = uri
+                _imageUri = uri
             }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setup_prof)
-        val setupProfViewModel = ViewModelProvider(this).get(Homeviewmodel::class.java)
+        binding = ActivitySetupProfBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         firebaseAuth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-        _imageUri = MutableLiveData()
         val firebaseAuth = FirebaseAuth.getInstance()
 
         binding.saveprofile.setOnClickListener {
             val id = firebaseAuth.currentUser?.uid
-            val name = getusername.text.toString()
-            val bio = getuserbio.text.toString()
+            val name = binding.getusername.text.toString()
+            val bio = binding.getuserbio.text.toString()
             val profilePic = ""
 //        if (firebaseAuth.currentUser.isAnonymous)
             if (id != null) {
                 saveProfileData(id, name, bio, profilePic)
-                setupProfViewModel.username = name as MutableLiveData<String>
-                setupProfViewModel.bio = bio as MutableLiveData<String>
-                setupProfViewModel.profileImageUrl = profilePic as MutableLiveData<String>
+//                setupProfViewModel.username = name as MutableLiveData<String>
+//                setupProfViewModel.bio = bio as MutableLiveData<String>
+//                setupProfViewModel.profileImageUrl = profilePic as MutableLiveData<String>
             }
         }
 
@@ -87,8 +86,8 @@ class SetupProf : AppCompatActivity() {
 
         val imageRef = storageRef.child("profiles/${id}/profilePic")
 
-        if (_imageUri.value != null) {
-            imageRef.putFile(_imageUri.value!!)
+        if (_imageUri != null) {
+            imageRef.putFile(_imageUri!!)
                 .addOnSuccessListener {
                     imageRef.downloadUrl.addOnSuccessListener {
                         val profileUpdates = UserProfileChangeRequest.Builder()
@@ -113,7 +112,7 @@ class SetupProf : AppCompatActivity() {
 //                    saveProfileDataToFirestore(profileMap)
                 }
         } else {
-//            saveProfileDataToFirestore(profileMap)
+            saveProfileDataToFirestore(profileMap)
         }
     }
 

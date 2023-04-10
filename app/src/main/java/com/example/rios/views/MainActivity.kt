@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.example.rios.R
+import com.example.rios.utils.SharedPrefernceHelper
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
@@ -36,18 +37,29 @@ class MainActivity : AppCompatActivity() {
         // Set a custom view for the fourth tab with a smaller icon
         val tab = tabLayout.getTabAt(3)
         tab?.setCustomView(R.layout.settingstab)
+        val imageView = tab?.view?.findViewById<ImageView>(R.id.tab_icon)
         val user = FirebaseAuth.getInstance().currentUser
 
+        val (username, bio, profileImageUrl) = SharedPrefernceHelper(this).getUserDetails()
+        if (profileImageUrl != null){
+            if (imageView != null) {
+                Glide.with(this)
+                    .load(profileImageUrl)
+                    .placeholder(R.drawable.settings)
+                    .into(imageView)
+            }
+        }else {
 // Get the user's photo URI
-        val photoUri = user?.photoUrl
+            val photoUri = user?.photoUrl
 
 // Load the photo into an ImageView using Glide
-        val imageView = tab?.view?.findViewById<ImageView>(R.id.tab_icon)
-        if (imageView != null) {
-            Glide.with(this)
-                .load(photoUri)
-                .placeholder(R.drawable.settings)
-                .into(imageView)
+
+            if (imageView != null) {
+                Glide.with(this)
+                    .load(photoUri)
+                    .placeholder(R.drawable.settings)
+                    .into(imageView)
+            }
         }
 
         // Set the icon for the fourth tab
@@ -95,8 +107,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 }
-
-
 
 
 //        /        btnSignOut.setOnClickListener {
