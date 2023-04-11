@@ -12,6 +12,7 @@
         android:id="@+id/nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/senderchat"
         app:layout_constraintBottom_toTopOf="@id/chatRecyclerView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,12 +22,25 @@
 
         <ImageView
             android:id="@+id/back"
-            android:src="@drawable/previous"
+            android:src="@drawable/back"
             android:layout_marginLeft="3dp"
             android:layout_margin="6dp"
             android:layout_width="25dp"
             android:layout_height="25dp"
             app:tint="@color/grey" />
+        <TextView
+            android:id="@+id/chatuser"
+            android:text="raj kappor"
+            android:textSize="18sp"
+            android:layout_weight="1"
+            android:layout_marginEnd="50dp"
+            android:textColor="@color/grey"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </TextView>
 
     </LinearLayout>
 

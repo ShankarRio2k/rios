@@ -9,6 +9,10 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.example.rios.R
+import com.example.rios.tabs.settings
+import com.example.rios.tabs.shots
+import com.example.rios.tabs.surf
+import com.example.rios.tabs.talks
 import com.example.rios.utils.SharedPrefernceHelper
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.analytics.FirebaseAnalytics

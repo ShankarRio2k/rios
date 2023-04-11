@@ -1,66 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:id="@+id/videoItemLayout"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.exoplayer2.ui.PlayerView
+    <VideoView
         android:id="@+id/playerView"
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="250dp"
         android:background="@android:color/black"
         app:use_controller="false"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/userLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/userLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@+id/playerView"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="8dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/playerView">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userImage"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginEnd="15dp"
             android:src="@drawable/profilepic"
-            app:civ_border_width="1dp"
             app:civ_border_color="@color/appColor"
-            app:layout_constraintTop_toTopOf="parent"
+            app:civ_border_width="1dp"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginEnd="8dp"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/userName"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="@color/appColor"
             android:text="User Name"
-            app:layout_constraintTop_toTopOf="@+id/userImage"
+            android:textColor="@color/appColor"
+            android:textSize="14sp"
+            android:layout_marginStart="10dp"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/userImage"
-            app:layout_constraintEnd_toStartOf="@+id/userBio"
-            app:layout_constraintHorizontal_weight="1"/>
+            app:layout_constraintTop_toTopOf="@+id/userImage" />
 
         <TextView
-            android:id="@+id/userBio"
-            android:layout_width="0dp"
+            android:id="@+id/Title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="10dp"
+            android:maxLines="2"
+            android:text="Title"
             android:textColor="@color/grey"
-            android:text="User Bio"
-            app:layout_constraintTop_toTopOf="@+id/userImage"
-            app:layout_constraintStart_toEndOf="@+id/userName"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="8dp"/>
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@+id/userImage"
+            app:layout_constraintTop_toBottomOf="@id/userName" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+

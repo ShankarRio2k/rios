@@ -31,7 +31,8 @@ import java.util.*
 
 class AddShotFragment : Fragment() {
     private lateinit var binding: FragmentAddShotBinding
-//    private lateinit var exoPlayer: SimpleExoPlayer
+
+    //    private lateinit var exoPlayer: SimpleExoPlayer
     private lateinit var firebaseStorage: FirebaseStorage
     private lateinit var storageReference: StorageReference
     private lateinit var firebaseFirestore: FirebaseFirestore
@@ -55,6 +56,7 @@ class AddShotFragment : Fragment() {
         // Initialize MediaController and ExoPlayer
         val mediaController = MediaController(requireContext())
         firebaseStorage = FirebaseStorage.getInstance()
+        firebaseFirestore = FirebaseFirestore.getInstance()
         storageReference = firebaseStorage.reference
         // Handle click on add video button
         binding.addvideo.setOnClickListener {
@@ -68,7 +70,7 @@ class AddShotFragment : Fragment() {
         binding.buttonSaveVideo.setOnClickListener {
             // Check if video is selected
             if (videoUri != null) {
-
+                uploadVideo()
 
             } else {
                 val snackbar = Snackbar.make(
@@ -80,6 +82,7 @@ class AddShotFragment : Fragment() {
             }
         }
     }
+
     private fun uploadVideo() {
         val pd = ProgressDialog(requireContext())
         pd.setMessage("Uploading")
@@ -93,29 +96,19 @@ class AddShotFragment : Fragment() {
             storageReference.child("videos").child(it).child("$videoId.mp4")
         }!!
 
-        // Get the file path of the selected video
-        val filePath = videoUri?.path
-        val file = File(filePath!!)
-
-        // Compress the video using FFmpeg library
-        val compressedFile = File(requireContext().cacheDir, "${videoId}_compressed.mp4")
-        val command = "-y -i $filePath -c:v libx264 -preset medium -crf 28 -c:a aac -b:a 128k -movflags faststart ${compressedFile.absolutePath}"
-        val cmd = arrayOf("/data/user/0/com.example.myapplication/files/ffmpeg", "-i", filePath, "-codec:v", "libx264", "-profile:v", "main", "-level", "3.1", "-preset", "veryfast", "-b:v", "2500k", "-maxrate", "2500k", "-bufsize", "6250k", "-vf", "scale=1920:1080", "-threads", "0", "-codec:a", "aac", "-b:a", "192k", "-f", "mp4", "-movflags", "+faststart", compressedFile.absolutePath)
-        try {
-            val exec = Runtime.getRuntime().exec(cmd)
-            exec.waitFor()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        // Upload the compressed video to Firebase Storage
-        val compressedVideoUri = Uri.fromFile(compressedFile)
-        videoRef.putFile(compressedVideoUri).addOnSuccessListener {
+        // Upload the selected video to Firebase Storage
+        videoRef.putFile(videoUri!!).addOnProgressListener { taskSnapshot ->
+            val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount).toInt()
+            pd.setMessage("Uploading: $progress%")
+        }.addOnSuccessListener {
             // Get the download URL for the uploaded video
             videoRef.downloadUrl.addOnSuccessListener { uri ->
                 val videoUrl = uri.toString()
-                Toast.makeText(requireContext(), "Video uploaded successfully", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(
+                    requireContext(),
+                    "Video uploaded successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
 
                 // Retrieve user's username and profile image URL from database
                 val userId = firebaseAuth.currentUser?.uid.toString()
@@ -149,16 +142,29 @@ class AddShotFragment : Fragment() {
                         ).show()
                         pd.dismiss()
                     }.addOnFailureListener {
-                        Toast.makeText(requireContext(), "Failed to add post", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Failed to add post",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         pd.dismiss()
-
                     }
                 }
             }
+        }.addOnFailureListener { exception ->
+            // Handle failure
+            Toast.makeText(
+                requireContext(),
+                "Failed to upload video: ${exception.message}",
+                Toast.LENGTH_SHORT
+            ).show()
+            pd.dismiss()
         }
     }
-            override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_VEDIO && resultCode == RESULT_OK && data != null && data.data != null) {
             videoUri = data.data!!
@@ -170,14 +176,20 @@ class AddShotFragment : Fragment() {
             val retriever = MediaMetadataRetriever()
             retriever.setDataSource(requireContext(), videoUri)
 
-            val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0
+            val duration =
+                retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                    ?.toLong() ?: 0
             if (duration > 60_000) {
-                Toast.makeText(requireContext(), "please select a video less than 1 min ", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "please select a video less than 1 min ",
+                    Toast.LENGTH_SHORT
+                ).show()
                 binding.addvideo.isVisible = true
                 binding.AddedVideo.isVisible = false
                 binding.AddedVideo.stopPlayback()
             } else {
-                uploadVideo()
+
             }
         }
     }

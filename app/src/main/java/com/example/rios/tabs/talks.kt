@@ -1,4 +1,4 @@
-package com.example.rios.views
+package com.example.rios.tabs
 
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.rios.R
 import com.example.rios.adapter.SuggestedAdapter
 import com.example.rios.model.User
+import com.example.rios.views.Homeviewmodel
+import com.example.rios.views.UserAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings

@@ -94,11 +94,8 @@ class UserAdapter(val context: Context, val users: List<User>) : RecyclerView.Ad
             true
         }
 
-
-
         // Bind other views here
     }
-
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val username = itemView.findViewById<TextView>(R.id.usernlist)

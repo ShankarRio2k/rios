@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rios.model.User
 import com.example.rios.model.post
+import com.example.rios.model.video
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -16,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,6 +30,8 @@ class Homeviewmodel : ViewModel() {
     private val auth = Firebase.auth
     private val TAG = "SurfViewModel"
     private val currentUser: FirebaseUser? = auth.currentUser
+    private val firestore = Firebase.firestore
+    private val videosCollectionRef = firestore.collection("shots")
 
     private val _posts = MutableLiveData<List<post>>()
     val posts: LiveData<List<post>>
@@ -128,6 +132,23 @@ class Homeviewmodel : ViewModel() {
         }
     }
 
+    fun getVideosFromFirestore(): LiveData<List<video>> {
+        val videosLiveData = MutableLiveData<List<video>>()
+        videosCollectionRef.get()
+            .addOnSuccessListener { result ->
+                val videosList = mutableListOf<video>()
+                for (document in result) {
+                    val video = document.toObject<video>()
+                    videosList.add(video)
+                }
+                videosLiveData.value = videosList
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error getting videos from Firestore", exception)
+            }
+        return videosLiveData
+    }
+
     private suspend fun loadFriendIds(userId: String): List<String> {
         val friendsSnapshot =
             db.collection("users").document(userId).collection("friends").get(Source.SERVER).await()
@@ -144,8 +165,8 @@ class Homeviewmodel : ViewModel() {
             val post = document.toObject(post::class.java)
             if (post != null) {
                 if (post.userId == user?.uid) {
-                    post.profileUrl = user.photoUrl.toString()
-                    post.username = user.displayName
+                    // Skip the post if it was created by the current user
+                    return@mapNotNull null
                 } else if (friendIds.contains(post.userId)) {
                     val profileSnapshot =
                         db.collection("profiles").document(post.userId).get(Source.SERVER).await()
@@ -160,6 +181,8 @@ class Homeviewmodel : ViewModel() {
             return@mapNotNull post
         }
     }
+
+
 
 //        fun addPost(title: String, content: String) {
 //            val currentUser = auth.currentUser

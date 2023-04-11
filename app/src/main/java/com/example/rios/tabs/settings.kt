@@ -1,4 +1,4 @@
-package com.example.rios.views
+package com.example.rios.tabs
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,6 +12,7 @@ import com.example.rios.databinding.FragmentSettingsBinding
 import com.example.rios.databinding.FragmentSurfBinding
 import com.example.rios.utils.FirebaseUtils.firebaseAuth
 import com.example.rios.utils.SharedPrefernceHelper
+import com.example.rios.views.Homeviewmodel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -54,26 +55,8 @@ class settings : Fragment(R.layout.fragment_settings) {
                 sharedPreferencesHelper.saveUserDetails(username!!, bio!!, profileImageUrl!!)
             }
 
+        }
 
-//        settingViewModel.username.observe(viewLifecycleOwner) { username ->
-//            binding.username.text = username
-//        }
-//        settingViewModel.bio.observe(viewLifecycleOwner) { bio ->
-//            binding.bio.text = bio
-//        }
-//        settingViewModel.profileImageUrl.observe(viewLifecycleOwner) { profileImageUrl ->
-//            Glide.with(this).load(profileImageUrl).into(binding.userprof)
-//        }
-    }
-
-//    override fun onCreateView(
-//        inflater: LayoutInflater, container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_settings, container, false)
-//
-//
     }
 
     companion object {

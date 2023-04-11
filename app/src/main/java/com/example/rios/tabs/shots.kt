@@ -1,4 +1,4 @@
-package com.example.rios.views
+package com.example.rios.tabs
 
 import android.app.Activity
 import android.content.Intent
@@ -13,8 +13,11 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import com.example.rios.R
+import com.example.rios.adapter.Videoadapter
 import com.example.rios.databinding.ActivityCreateaccountBinding
 import com.example.rios.databinding.FragmentShotsBinding
+import com.example.rios.views.AddShotFragment
+import com.example.rios.views.Homeviewmodel
 import kotlinx.android.synthetic.main.fragment_shots.*
 
 class shots : Fragment() {
@@ -34,6 +37,19 @@ class shots : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Create an instance of the VideoAdapter class
+        val videoAdapter = Videoadapter(emptyList(), requireContext())
+
+        // Set the adapter on the RecyclerView
+        binding.videoList.adapter = videoAdapter
+
+        // Fetch the videos from Firestore using the Homeviewmodel instance
+        shotsViewmodel.getVideosFromFirestore().observe(viewLifecycleOwner) { videos ->
+            // Update the list of videos in the adapter
+            videoAdapter.updateVideos(videos)
+        }
+
         binding.addvideo.setOnClickListener {
             // Create an instance of the AddShotFragment
             val addShotFragment = AddShotFragment()
@@ -42,10 +58,6 @@ class shots : Fragment() {
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
         }
-
-
-
-
     }
 
 

@@ -12,11 +12,18 @@ import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.rios.R
 import com.example.rios.adapter.MessageAdapter
+import com.example.rios.databinding.FragmentChatBinding
+import com.example.rios.databinding.FragmentSurfBinding
 import com.example.rios.model.ChatMessage
 import com.example.rios.model.User
+import com.example.rios.tabs.talks
 import com.example.rios.utils.FirebaseUtils
+import com.example.rios.utils.SharedPreferenceUtils
+import com.example.rios.utils.SharedPreferenceUtils.getUsername
+import com.example.rios.utils.SharedPreferenceUtils.setUsername
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
@@ -25,6 +32,7 @@ import kotlinx.android.synthetic.main.fragment_chat.*
 
 class Chat() : Fragment() {
     private lateinit var newUser: User
+    private lateinit var binding: FragmentChatBinding
 
     constructor(user: User) : this() {
         this.newUser = user
@@ -84,14 +92,21 @@ class Chat() : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        activity?.window?.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        activity?.window?.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         return inflater.inflate(R.layout.fragment_chat, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding = FragmentChatBinding.bind(view)
 
+        val firebaseFirestore = FirebaseFirestore.getInstance()
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val userId = FirebaseUtils.firebaseAuth.currentUser?.uid.toString()
 
         SenderRoom = newUser.id + FirebaseUtils.firebaseAuth.currentUser!!.uid
         ReceiverRoom = FirebaseUtils.firebaseAuth.currentUser!!.uid + newUser.id
@@ -129,20 +144,36 @@ class Chat() : Fragment() {
                 messageAdapter.notifyDataSetChanged()
             }
 
+        val userDetails = SharedPreferenceUtils.getUserDetails(requireContext())
+        val username = userDetails.first
+        if (username.isNullOrEmpty()) {
+            val userRef = firebaseFirestore.collection("profiles").document(userId)
+            userRef.get().addOnSuccessListener { documentSnapshot ->
+                val username = documentSnapshot.getString("name")
 
-        sendImage.setOnClickListener {
+                binding.chatuser.text = username
+                // Store the username in SharedPreferences
+                if (username != null) {
+                    setUsername(requireContext(), username)
+                }
+            }
+        } else {
+            binding.chatuser.text = username
+        }
+
+        binding.sendImage.setOnClickListener {
             imagePickerLauncher.launch("image/*")
         }
 
-        back.setOnClickListener {
-                val newFragment = talks() // Replace with the fragment you want to load
-                val transaction = requireFragmentManager().beginTransaction()
-                transaction.replace(R.id.inner_container, newFragment)
-                transaction.addToBackStack(null)
-                transaction.commit()
-            }
+        binding.back.setOnClickListener {
+            val newFragment = talks() // Replace with the fragment you want to load
+            val transaction = requireFragmentManager().beginTransaction()
+            transaction.replace(R.id.inner_container, newFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
 
-        chatSendButton.setOnClickListener {
+        binding.chatSendButton.setOnClickListener {
             val messageText = chatInputEditText.text.toString().trim()
             if (messageText.isNotEmpty()) {
                 val currentMessage = ChatMessage(
@@ -176,4 +207,5 @@ class Chat() : Fragment() {
         }
     }
 }
+
 

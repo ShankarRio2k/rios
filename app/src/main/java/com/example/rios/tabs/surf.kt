@@ -1,4 +1,4 @@
-package com.example.rios.views
+package com.example.rios.tabs
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +12,8 @@ import com.example.rios.R
 import com.example.rios.adapter.postAdapter
 import com.example.rios.databinding.FragmentSurfBinding
 import com.example.rios.model.post
+import com.example.rios.views.Homeviewmodel
+import com.example.rios.views.PostActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
