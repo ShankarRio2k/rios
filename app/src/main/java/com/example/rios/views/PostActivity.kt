@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.rios.R
 import com.example.rios.databinding.ActivityCreateaccountBinding
 import com.example.rios.databinding.ActivityPostBinding
+import com.example.rios.databinding.FragmentSurfBinding
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -52,7 +53,8 @@ class PostActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_post)
+        binding = ActivityPostBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         close = findViewById(R.id.close)
         imgadded = findViewById(R.id.imgadded)
@@ -64,11 +66,11 @@ class PostActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
 
 
-        close.setOnClickListener {
+        binding.close.setOnClickListener {
             finish()
         }
 
-        imgadded.setOnClickListener {
+        binding.imgadded.setOnClickListener {
             launcher.launch(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI))
         }
 
@@ -81,7 +83,7 @@ class PostActivity : AppCompatActivity() {
             }
         }
 
-        postimg.setOnClickListener {
+        binding.postimg.setOnClickListener {
             uploadimage()
         }
     }

@@ -5,9 +5,13 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
+import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Base64.DEFAULT
+import android.util.Base64
+import android.util.Base64.encodeToString
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -98,73 +102,95 @@ class AddShotFragment : Fragment() {
 
         // Upload the selected video to Firebase Storage
         videoRef.putFile(videoUri!!).addOnProgressListener { taskSnapshot ->
-            val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount).toInt()
+            val progress =
+                (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount).toInt()
             pd.setMessage("Uploading: $progress%")
-        }.addOnSuccessListener {
-            // Get the download URL for the uploaded video
-            videoRef.downloadUrl.addOnSuccessListener { uri ->
-                val videoUrl = uri.toString()
+        }.continueWithTask { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
+                }
+            }
+            videoRef.downloadUrl
+        }.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val videoUrl = task.result.toString()
                 Toast.makeText(
                     requireContext(),
                     "Video uploaded successfully",
                     Toast.LENGTH_SHORT
                 ).show()
 
-                // Retrieve user's username and profile image URL from database
-                val userId = firebaseAuth.currentUser?.uid.toString()
-                val userRef = firebaseFirestore.collection("profiles").document(userId)
-                userRef.get().addOnSuccessListener { documentSnapshot ->
-                    val username = documentSnapshot.getString("name")
-                    val profileImageUrl = documentSnapshot.getString("profilePic")
+                // Create a thumbnail for the video
+                val thumbnail: Bitmap? = videoUri?.path?.let { it1 ->
+                    ThumbnailUtils.createVideoThumbnail(
+                        it1,
+                        MediaStore.Images.Thumbnails.MINI_KIND
+                    )
+                }
 
-                    // Create a map object with post data including username and profile image URL
-                    val shotId = UUID.randomUUID().toString()
-                    val postMap: MutableMap<String, Any> = HashMap()
-                    postMap["id"] = shotId
-                    postMap["userid"] = userId
-                    postMap["timestamp"] = Timestamp.now()
-                    postMap["description"] = binding.videoDescription.text.toString()
-                    postMap["videoUrl"] = videoUrl
-                    username?.let {
-                        postMap["username"] = it
-                    }
-                    profileImageUrl?.let {
-                        postMap["profileUrl"] = it
-                    }
+                thumbnail?.let {
+                    // Convert the thumbnail to a base64-encoded string
+                    val baos = ByteArrayOutputStream()
+                    it.compress(Bitmap.CompressFormat.PNG, 100, baos)
+                    val thumbnailBytes = baos.toByteArray()
+                    val thumbnailString = Base64.encodeToString(thumbnailBytes, Base64.DEFAULT)
 
-                    // Add the post data to Firebase Firestore
-                    val postRef = firebaseFirestore.collection("shots").document(shotId)
-                    postRef.set(postMap).addOnSuccessListener {
-                        Toast.makeText(
-                            requireContext(),
-                            "Post added successfully",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        pd.dismiss()
-                    }.addOnFailureListener {
-                        Toast.makeText(
-                            requireContext(),
-                            "Failed to add post",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        pd.dismiss()
+                    // Retrieve user's username and profile image URL from database
+                    val userId = firebaseAuth.currentUser?.uid.toString()
+                    val userRef = firebaseFirestore.collection("profiles").document(userId)
+                    userRef.get().addOnSuccessListener { documentSnapshot ->
+                        val username = documentSnapshot.getString("name")
+                        val profileImageUrl = documentSnapshot.getString("profilePic")
+
+                        // Create a map object with post data including username, profile image URL, and thumbnail
+                        val shotId = UUID.randomUUID().toString()
+                        val postMap: MutableMap<String, Any> = HashMap()
+                        postMap["id"] = shotId
+                        postMap["userId"] = userId
+                        postMap["timestamp"] = Timestamp.now()
+                        postMap["description"] = binding.videoDescription.text.toString()
+                        postMap["videoUrl"] = videoUrl
+                        postMap["username"] = username.toString()
+                        postMap["profileUrl"] = profileImageUrl.toString()
+                        postMap["thumbnail"] = thumbnailString // Add thumbnail to postMap
+
+                        // Add the post data to Firebase Firestore
+                        val postRef = firebaseFirestore.collection("videos").document(shotId)
+                        postRef.set(postMap).addOnSuccessListener {
+                            Toast.makeText(
+                                requireContext(),
+                                "Post added successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            pd.dismiss()
+                        }.addOnFailureListener {
+                            Toast.makeText(
+                                requireContext(),
+                                "Failed to add post",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            pd.dismiss()
+                        }
                     }
                 }
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Failed to upload video",
+                    Toast.LENGTH_SHORT
+                ).show()
+                pd.dismiss()
             }
-        }.addOnFailureListener { exception ->
-            // Handle failure
-            Toast.makeText(
-                requireContext(),
-                "Failed to upload video: ${exception.message}",
-                Toast.LENGTH_SHORT
-            ).show()
-            pd.dismiss()
         }
     }
 
 
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_VEDIO && resultCode == RESULT_OK && data != null && data.data != null) {
             videoUri = data.data!!

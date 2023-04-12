@@ -1,6 +1,7 @@
 package com.example.rios.model
 
 import com.google.firebase.Timestamp
+
 data class video(
     val id: String = "",
     val userid: String = "",
@@ -9,8 +10,9 @@ data class video(
     val timestamp: Timestamp? = null,
     val title: String = "",
     val description: String = "",
-    val videoUrl: String = ""
+    val videoUrl: String = "",
+    val thumbnail: String = ""
 ) {
     // No-argument constructor required by Firebase
-    constructor() : this("", "", "", null, null, "", "", "")
+    constructor() : this("", "", "", null, null, "", "", "", "")
 }
