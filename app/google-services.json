@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1059398676934",
-    "project_id": "rios-60ee7",
-    "storage_bucket": "rios-60ee7.appspot.com"
+    "project_number": "480190634654",
+    "project_id": "rios-aad55",
+    "storage_bucket": "rios-aad55.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1059398676934:android:d33b25c2027d2ac3b902c7",
+        "mobilesdk_app_id": "1:480190634654:android:be48f5d61a98bc9bc5b98f",
         "android_client_info": {
           "package_name": "com.example.rios"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1059398676934-racgol6i41md4hrik3moa62tj2dp22cf.apps.googleusercontent.com",
+          "client_id": "480190634654-ue4fqj0fh20kkqinbupvi3qbct5g9m9h.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBIgv9edBq6tf4hWxLoznlpmo5n58888wk"
+          "current_key": "AIzaSyCOu2kTCLLk40A2C0AZH8qbl59IYkYG_wM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1059398676934-racgol6i41md4hrik3moa62tj2dp22cf.apps.googleusercontent.com",
+              "client_id": "480190634654-ue4fqj0fh20kkqinbupvi3qbct5g9m9h.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

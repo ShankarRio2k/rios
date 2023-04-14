@@ -129,10 +129,8 @@ class AddShotFragment : Fragment() {
                     )
                 }
 
-                thumbnail?.let {
                     // Convert the thumbnail to a base64-encoded string
                     val baos = ByteArrayOutputStream()
-                    it.compress(Bitmap.CompressFormat.PNG, 100, baos)
                     val thumbnailBytes = baos.toByteArray()
                     val thumbnailString = Base64.encodeToString(thumbnailBytes, Base64.DEFAULT)
 
@@ -171,7 +169,6 @@ class AddShotFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                             pd.dismiss()
-                        }
                     }
                 }
             } else {

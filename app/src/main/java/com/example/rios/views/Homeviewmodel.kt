@@ -31,7 +31,7 @@ class Homeviewmodel : ViewModel() {
     private val TAG = "SurfViewModel"
     private val currentUser: FirebaseUser? = auth.currentUser
     private val firestore = Firebase.firestore
-    private val videosCollectionRef = firestore.collection("shots")
+    private val videosCollectionRef = firestore.collection("videos")
 
     private val _posts = MutableLiveData<List<post>>()
     val posts: LiveData<List<post>>

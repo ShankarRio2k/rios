@@ -62,7 +62,7 @@ class VideoListAdapter(
 
             player?.setMediaSource(mediaSource)
             player?.prepare()
-            player?.playWhenReady = true
+            player?.playWhenReady = false
 
             binding.root.setOnClickListener {
                 listener.onVideoClick(video)
