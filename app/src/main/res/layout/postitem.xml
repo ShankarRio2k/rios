@@ -33,10 +33,7 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_image"
-                    android:layout_margin="8dp"
-                    app:civ_border_color="@color/appColor"
-                    app:civ_border_overlay="true"
-                    app:civ_border_width="2dp"
+                    android:layout_margin="5dp"
                     android:layout_width="40dp"
                     android:layout_height="40dp" />
 
@@ -44,7 +41,8 @@
                     android:id="@+id/userName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
+                    android:padding="4dp"
+                    android:paddingStart="5dp"
                     android:layout_gravity="center"
                     android:text="username"
                     android:textColor="@color/black"
@@ -54,9 +52,10 @@
 
             <TextView
                 android:id="@+id/post_description"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="6dp"
+                android:layout_marginStart="8dp"
                 android:text="dhdjdf"
                 android:maxLines="5"
                 android:ems="10"
@@ -66,7 +65,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="start"
                 android:orientation="horizontal"
                 android:padding="8dp">
 
@@ -82,13 +81,13 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginEnd="20dp"
-                    android:src="@drawable/ic_post_comment" />
+                    android:src="@drawable/chat" />
 
                 <ImageView
                     android:id="@+id/post_share_icon"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_share" />
+                    android:src="@drawable/share" />
 
             </LinearLayout>
 

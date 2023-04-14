@@ -15,12 +15,10 @@ android:layout_height="wrap_content">
         android:id="@+id/userlistimg"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginStart="3dp"
         android:layout_gravity="center_vertical"
         android:elevation="3dp"
-        android:src="@drawable/profilepic"
-        app:civ_border_color="@color/appColor"
-        app:civ_border_overlay="true"
-        app:civ_border_width="2dp" />
+        android:src="@drawable/profilepic" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -32,12 +30,11 @@ android:layout_height="wrap_content">
             android:id="@+id/usernlist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="4dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="sans-serif-medium"
             android:text="Shankar Rio"
             android:textColor="@color/grey"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/typing"

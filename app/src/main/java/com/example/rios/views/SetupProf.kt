@@ -2,6 +2,7 @@ package com.example.rios.views
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.*
@@ -38,7 +39,7 @@ class SetupProf : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private lateinit var binding: ActivitySetupProfBinding
     private var _imageUri: Uri? = null
-
+    private lateinit var progressDialog: ProgressDialog
 
     private val imagePickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -64,15 +65,23 @@ class SetupProf : AppCompatActivity() {
 //        if (firebaseAuth.currentUser.isAnonymous)
             if (id != null) {
                 saveProfileData(id, name, bio, profilePic)
-//                setupProfViewModel.username = name as MutableLiveData<String>
-//                setupProfViewModel.bio = bio as MutableLiveData<String>
-//                setupProfViewModel.profileImageUrl = profilePic as MutableLiveData<String>
+                createProgressDialog()
+                progressDialog.show()
             }
         }
 
         binding.circularImageView.setOnClickListener {
             imagePickerLauncher.launch("image/*")
         }
+    }
+
+    private fun createProgressDialog() {
+        progressDialog = ProgressDialog(this)
+        progressDialog.setCancelable(false)
+        progressDialog.setTitle("Uploading")
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+        progressDialog.progress = 0
+        progressDialog.max = 100
     }
 
     private fun saveProfileData(id: String, name: String, bio: String, profilePic: String) {
@@ -122,6 +131,7 @@ class SetupProf : AppCompatActivity() {
                 .addOnSuccessListener { documentReference ->
 //                    Log.d(TAG, "Profile data saved with ID: ${documentReference.id}")
                     toast("Profile added")
+                    progressDialog.dismiss()
                     progressofsetprof.visibility = View.GONE
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()

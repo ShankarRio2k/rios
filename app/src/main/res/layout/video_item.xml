@@ -24,32 +24,33 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="9dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginBottom="70dp"
         android:gravity="end"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="8dp"
             android:src="@drawable/ic_baseline_favorite_border_24"
-            app:tint="@color/appColor"/>
+            app:tint="@color/white"/>
 
         <ImageView
-            android:layout_width="35dp"
+            android:layout_width="30dp"
             android:layout_height="40dp"
             android:layout_margin="8dp"
             android:src="@drawable/send"/>
 
         <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="8dp"
+            android:paddingStart="5dp"
             android:src="@drawable/ic_share"
-            app:tint="@color/appColor" />
+            app:tint="@color/white" />
 
     </LinearLayout>
 
@@ -58,42 +59,38 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/light_grey_transparent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.974">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/userName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="100dp"
+            android:layout_marginStart="70dp"
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-condensed-medium"
             android:text=""
-            android:textColor="@color/black"
-            android:textSize="20dp">
+            android:textColor="@color/white"
+            android:textSize="16dp">
 
         </TextView>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userImage"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="5dp"
-            android:padding="5dp"
-            android:src="@mipmap/ic_launcher">
-
-        </de.hdodenhof.circleimageview.CircleImageView>
+            android:layout_margin="8dp"
+            app:civ_border_color="@color/appColor"
+            app:civ_border_overlay="true"
+            app:civ_border_width="2dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
 
         <TextView
             android:id="@+id/Title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/userImage"
-            android:layout_marginStart="10dp"
+            android:layout_below="@id/userName"
+            android:layout_marginStart="70dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"

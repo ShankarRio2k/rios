@@ -29,10 +29,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.fragment_chat.*
+import kotlinx.android.synthetic.main.fragment_settings.*
 
 class Chat() : Fragment() {
     private lateinit var newUser: User
     private lateinit var binding: FragmentChatBinding
+//    private lateinit var users: MutableList<User>
 
     constructor(user: User) : this() {
         this.newUser = user
@@ -144,8 +146,8 @@ class Chat() : Fragment() {
                 messageAdapter.notifyDataSetChanged()
             }
 
-        val userDetails = SharedPreferenceUtils.getUserDetails(requireContext())
-        val username = userDetails.first
+//        val userDetails = SharedPreferenceUtils.getUserDetails(requireContext())
+        val username = newUser.name
         if (username.isNullOrEmpty()) {
             val userRef = firebaseFirestore.collection("profiles").document(userId)
             userRef.get().addOnSuccessListener { documentSnapshot ->

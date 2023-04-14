@@ -68,10 +68,8 @@ class talks : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (currentUser != null) {
-                getFriends()
-                getSuggestedUsers()
-//            getFriends()
-//            getSuggestedUsers()
+            getFriends()
+            getSuggestedUsers()
         }
     }
 
@@ -137,6 +135,7 @@ class talks : Fragment() {
 
     override fun onStart() {
         super.onStart()
+
     }
 
     companion object {
