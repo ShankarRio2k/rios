@@ -15,6 +15,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class postAdapter(private val context: Context, private val posts: List<post>) :
     RecyclerView.Adapter<postAdapter.PostViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.postitem, parent, false)
         return PostViewHolder(view)
