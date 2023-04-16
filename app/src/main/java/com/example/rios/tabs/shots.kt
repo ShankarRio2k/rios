@@ -41,7 +41,7 @@ class shots : Fragment(), VideoListAdapter.OnVideoClickListener {
         binding.videoList.adapter = videoAdapter
 
         // Set the orientation of the LinearLayoutManager to horizontal
-        binding.videoList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.videoList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         // Add a SnapHelper to snap the videos to the center of the screen
         val snapHelper = LinearSnapHelper()
@@ -61,6 +61,17 @@ class shots : Fragment(), VideoListAdapter.OnVideoClickListener {
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
         }
+    }
+    override fun onStart() {
+        super.onStart()
+        val adapter = binding.videoList.adapter as? VideoListAdapter
+        adapter?.startPlayer()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val adapter = binding.videoList.adapter as? VideoListAdapter
+        adapter?.stopPlayer()
     }
 
     override fun onVideoClick(video: video) {

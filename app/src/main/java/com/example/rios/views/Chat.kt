@@ -1,14 +1,14 @@
 package com.example.rios.views
 
 import android.content.*
+import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +24,7 @@ import com.example.rios.utils.FirebaseUtils
 import com.example.rios.utils.SharedPreferenceUtils
 import com.example.rios.utils.SharedPreferenceUtils.getUsername
 import com.example.rios.utils.SharedPreferenceUtils.setUsername
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
@@ -34,6 +35,8 @@ import kotlinx.android.synthetic.main.fragment_settings.*
 class Chat() : Fragment() {
     private lateinit var newUser: User
     private lateinit var binding: FragmentChatBinding
+    private var isTyping = false
+    private val recorder = MediaRecorder()
 //    private lateinit var users: MutableList<User>
 
     constructor(user: User) : this() {
@@ -146,6 +149,25 @@ class Chat() : Fragment() {
                 messageAdapter.notifyDataSetChanged()
             }
 
+        binding.chatInputEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Not needed
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s != null && s.isNotEmpty()) {
+                    setTypingStatus(true)
+                } else {
+                    setTypingStatus(false)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // Not needed
+            }
+        })
+        
+
 //        val userDetails = SharedPreferenceUtils.getUserDetails(requireContext())
         val username = newUser.name
         if (username.isNullOrEmpty()) {
@@ -165,6 +187,49 @@ class Chat() : Fragment() {
 
         binding.sendImage.setOnClickListener {
             imagePickerLauncher.launch("image/*")
+        }
+
+        binding.chatAudioButton.setOnLongClickListener {
+            // This code will run when the user long-presses the chatAudioButton
+
+            // Initialize a MediaRecorder object
+            val recorder = MediaRecorder()
+
+            // Set the audio source to the device's microphone
+            recorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+
+            // Set the output format and file path
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            val externalCacheDir = context?.externalCacheDir
+            val audioFilePath = "${externalCacheDir?.absolutePath}/audio_file.3gp"
+            recorder.setOutputFile(audioFilePath)
+
+            // Set the audio encoder
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+
+            // Prepare and start recording
+            recorder.prepare()
+            recorder.start()
+
+            true // Return true to indicate that the event has been handled
+        }
+
+        binding.chatAudioButton.setOnTouchListener { v, event ->
+            // This code will run when the user touches and releases the chatAudioButton
+
+            when (event.action) {
+                MotionEvent.ACTION_UP -> {
+                    // Stop recording and release the MediaRecorder object
+                    recorder.stop()
+                    recorder.release()
+
+                    // Process the recorded audio file here
+                    // ...
+
+                    true // Return true to indicate that the event has been handled
+                }
+                else -> false
+            }
         }
 
         binding.back.setOnClickListener {
@@ -206,6 +271,46 @@ class Chat() : Fragment() {
                         Log.e(TAG, "Error sending message to SenderRoom", it)
                     }
             }
+        }
+    }
+
+    private fun setTypingStatus(isTyping: Boolean) {
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("chat").document(Room)
+
+        this.isTyping = isTyping
+
+        if (isTyping) {
+            docRef.update(currentUserId, true)
+        } else {
+            docRef.update(currentUserId, false)
+        }
+    }
+
+//    val editText = findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.chatInputEditText)
+//    editText.addTextChangedListener(textWatcher)
+
+    private val textWatcher = object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {}
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            isTyping = s?.isNotBlank() == true
+            updateMicAndSendImages()
+        }
+    }
+
+    private fun updateMicAndSendImages() {
+        val chatSendButton = binding.chatSendButton
+        val chatAudioButton = binding.chatAudioButton
+
+        if (isTyping) {
+            chatSendButton.visibility = View.VISIBLE
+            chatAudioButton.visibility = View.GONE
+        } else {
+            chatSendButton.visibility = View.GONE
+            chatAudioButton.visibility = View.VISIBLE
         }
     }
 }

@@ -11,7 +11,9 @@ data class video(
     val title: String = "",
     val description: String = "",
     val videoUrl: String = "",
-    val thumbnail: String = ""
+    val thumbnail: String = "",
+    var playbackPosition: Long = 0L // Add this field
+
 ) {
     // No-argument constructor required by Firebase
     constructor() : this("", "", "", null, null, "", "", "", "")

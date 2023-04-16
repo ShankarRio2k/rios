@@ -13,32 +13,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/senderchat"
-        app:layout_constraintBottom_toTopOf="@id/chatRecyclerView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/chatRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/back"
-            android:src="@drawable/back"
-            android:layout_marginLeft="3dp"
-            android:layout_margin="6dp"
             android:layout_width="25dp"
             android:layout_height="25dp"
+            android:layout_margin="6dp"
+            android:layout_marginLeft="3dp"
+            android:src="@drawable/back"
             app:tint="@color/grey" />
+
         <TextView
             android:id="@+id/chatuser"
-            android:text="raj kappor"
-            android:textSize="18sp"
-            android:layout_weight="1"
-            android:layout_marginEnd="50dp"
-            android:textColor="@color/grey"
-            android:layout_gravity="center"
-            android:gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="50dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="raj kappor"
+            android:textColor="@color/grey"
+            android:textSize="18sp">
 
         </TextView>
 
@@ -51,25 +52,28 @@
         android:clipToPadding="false"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@id/chatInputLayout"
-        app:layout_constraintTop_toBottomOf="@id/nav"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nav" />
 
     <LinearLayout
         android:id="@+id/chatInputLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:orientation="horizontal">
+        app:layout_constraintStart_toStartOf="parent">
+
         <ImageView
             android:id="@+id/sendImage"
-            android:src="@drawable/photo"
             android:layout_width="40dp"
+            android:layout_height="50dp"
             android:layout_marginTop="5dp"
-            android:layout_height="50dp">
+            android:src="@drawable/photo">
+
         </ImageView>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/chatInput"
             android:layout_width="match_parent"
@@ -82,19 +86,32 @@
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/chatinput"
-                android:textColor="@color/black"
-                android:textColorHint="@color/grey"
                 android:inputType="text"
-                android:maxLines="4" />
+                android:maxLines="4"
+                android:textColor="@color/black"
+                android:textColorHint="@color/grey" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <ImageView
             android:id="@+id/chatSendButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:clickable="true"
             android:layout_marginTop="2dp"
-            android:src="@drawable/sent"
-            android:contentDescription="sent" />
+            android:padding="6dp"
+            android:clickable="true"
+            android:contentDescription="sent"
+            android:src="@drawable/sent_btn"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/chatAudioButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="2dp"
+            android:clickable="true"
+            android:contentDescription="sent"
+            android:src="@drawable/communication"
+            android:visibility="gone" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.example.rios.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -12,10 +13,10 @@ import com.example.rios.model.video
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+class VideoListAdapter(private val listener: OnVideoClickListener) : ListAdapter<video, VideoListAdapter.ViewHolder>(DIFF_CALLBACK) {
 
-class VideoListAdapter(
-    private val listener: OnVideoClickListener
-) : ListAdapter<video, VideoListAdapter.ViewHolder>(DIFF_CALLBACK) {
+    private var currentPlayerViewHolder: ViewHolder? = null
+    private var currentlyPlayingPosition = RecyclerView.NO_POSITION
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<video>() {
@@ -34,9 +35,36 @@ class VideoListAdapter(
         return ViewHolder(binding, listener)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val video = getItem(position)
         holder.bind(video)
+        holder.itemView.setOnClickListener {
+            currentPlayerViewHolder?.stopVideo()
+            holder.playVideo()
+            currentPlayerViewHolder = holder
+            currentlyPlayingPosition = position
+        }
+
+        if (currentlyPlayingPosition == position) {
+            holder.playVideo()
+            currentPlayerViewHolder = holder
+        } else {
+            holder.stopVideo()
+        }
+    }
+
+    fun stopCurrentVideo() {
+        currentPlayerViewHolder?.stopVideo()
+        currentlyPlayingPosition = RecyclerView.NO_POSITION
+    }
+
+    fun startPlayer() {
+        currentPlayerViewHolder?.playVideo()
+    }
+
+    fun stopPlayer() {
+        currentPlayerViewHolder?.stopVideo()
+        currentlyPlayingPosition = RecyclerView.NO_POSITION
     }
 
     class ViewHolder(private val binding: VideoItemBinding, private val listener: OnVideoClickListener) : RecyclerView.ViewHolder(binding.root) {
@@ -55,7 +83,6 @@ class VideoListAdapter(
                 .placeholder(R.drawable.profilepic)
                 .error(R.drawable.profilepic)
                 .into(binding.userImage)
-
             val mediaItem = MediaItem.fromUri(video.videoUrl)
             val mediaSourceFactory = DefaultMediaSourceFactory(binding.root.context)
             val mediaSource = mediaSourceFactory.createMediaSource(mediaItem)
@@ -63,10 +90,14 @@ class VideoListAdapter(
             player?.setMediaSource(mediaSource)
             player?.prepare()
             player?.playWhenReady = false
+        }
 
-            binding.root.setOnClickListener {
-                listener.onVideoClick(video)
-            }
+        fun playVideo() {
+            player?.playWhenReady = true
+        }
+
+        fun stopVideo() {
+            player?.playWhenReady = false
         }
 
         fun releasePlayer() {
@@ -84,4 +115,3 @@ class VideoListAdapter(
         super.onViewRecycled(holder)
     }
 }
-
