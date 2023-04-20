@@ -23,11 +23,10 @@ class SuggestedAdapter(
     val onUpdateUserList: (User) -> Unit
 ) :
     RecyclerView.Adapter<SuggestedAdapter.ViewHolder>() {
-    private lateinit var newUser: User
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.suggested_users, parent, false)
-        return SuggestedAdapter.ViewHolder(view)
+        return ViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -36,16 +35,13 @@ class SuggestedAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = users[position]
-        newUser = user
         holder.username.text = user.name
         holder.userbio.text = user.bio
 
+        // Set the user's profile image
         val storageRef =
             FirebaseStorage.getInstance().reference.child("profiles/${user.id}/profilePic")
-
-        // Download the image from Firebase Storage
         storageRef.downloadUrl.addOnSuccessListener { uri ->
-            // Use Glide library to load the image into the ImageView
             Glide.with(holder.itemView)
                 .load(uri)
                 .into(holder.profileImage)
@@ -54,40 +50,44 @@ class SuggestedAdapter(
             // Handle any errors
         }
 
-        holder.addfriend.setOnClickListener {
-            // Add the user to the "friends" collection in Firestore
-            val db = FirebaseFirestore.getInstance()
-            val currentUser = FirebaseUtils.firebaseAuth.currentUser
-            if (currentUser != null) {
-                val currentUserId = currentUser.uid
-                val friendId = user.id
-                val friend = hashMapOf(
-                    "name" to user.name,
-                    "id" to friendId
-                )
-                onUpdateUserList(User(friendId, user.name,"",""))
+        // If the user is followed, hide the "Follow" button
+        if (user.isFollowed) {
+            holder.addfriend.visibility = View.GONE
+        } else {
+            holder.addfriend.visibility = View.VISIBLE
+            holder.addfriend.setOnClickListener {
+                // Add the user to the "friends" collection in Firestore
+                val db = FirebaseFirestore.getInstance()
+                val currentUser = FirebaseUtils.firebaseAuth.currentUser
+                if (currentUser != null) {
+                    val currentUserId = currentUser.uid
+                    val friendId = user.id
+                    val friend = hashMapOf(
+                        "name" to user.name,
+                        "id" to friendId
+                    )
 
-                db.collection("users").document(currentUserId)
-                    .collection("friends").document(friendId)
-                    .set(friend)
-                    .addOnSuccessListener {
-                        Toast.makeText(context, "Friend added successfully!", Toast.LENGTH_SHORT)
-                            .show()
-//                        if (position < users.size) {
-//                            val newList = users.toMutableList()
-//                            newList.removeAt(position)
-//                            users = newList.toList() as MutableList<User>
-                            notifyItemRemoved(position)
-//                        }
+                    // Update the user's isFollowed flag and notify the adapter
+                    user.isFollowed = true
+                    notifyItemChanged(position)
 
-                    }
-                    .addOnFailureListener { exception ->
-                        Toast.makeText(
-                            context,
-                            "Error adding friend: ${exception.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    db.collection("users").document(currentUserId)
+                        .collection("friends").document(friendId)
+                        .set(friend)
+                        .addOnSuccessListener {
+                            onUpdateUserList(User(friendId, user.name, user.bio, user.imageUrl, true, null))
+                            Toast.makeText(context, "Friend added successfully!", Toast.LENGTH_SHORT)
+                                .show()
+
+                        }
+                        .addOnFailureListener { exception ->
+                            Toast.makeText(
+                                context,
+                                "Error adding friend: ${exception.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                }
             }
         }
     }

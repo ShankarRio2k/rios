@@ -101,7 +101,7 @@
             android:clickable="true"
             android:contentDescription="sent"
             android:src="@drawable/sent_btn"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/chatAudioButton"
@@ -111,7 +111,7 @@
             android:clickable="true"
             android:contentDescription="sent"
             android:src="@drawable/communication"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

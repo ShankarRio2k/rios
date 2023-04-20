@@ -26,8 +26,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import kotlinx.android.synthetic.main.activity_post.*
-import kotlinx.android.synthetic.main.postitem.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.sql.Time
@@ -128,13 +126,10 @@ class PostActivity : AppCompatActivity() {
                     map["userId"] = userId
                     username?.let {
                         map["username"] = it
-                        postViewModel.username.value = it
                     }
                     profileImageUrl?.let {
                         map["profileUrl"] = it
-                        postViewModel.profileImageUrl.value = it
                     }
-
                     ref.set(map).addOnSuccessListener {
                         Toast.makeText(this@PostActivity, "map added", Toast.LENGTH_SHORT).show()
                     }.addOnFailureListener {

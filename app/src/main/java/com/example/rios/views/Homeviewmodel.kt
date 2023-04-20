@@ -1,19 +1,13 @@
 package com.example.rios.views
 
-import android.annotation.SuppressLint
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.rios.model.User
-import com.example.rios.model.post
-import com.example.rios.model.video
-import com.google.firebase.auth.FirebaseAuth
+import com.example.rios.model.*
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
@@ -22,7 +16,6 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class Homeviewmodel : ViewModel() {
 
@@ -32,49 +25,78 @@ class Homeviewmodel : ViewModel() {
     private val currentUser: FirebaseUser? = auth.currentUser
     private val firestore = Firebase.firestore
     private val videosCollectionRef = firestore.collection("videos")
-
     private val _posts = MutableLiveData<List<post>>()
+    private val userProfileCache = mutableMapOf<String, User>()
+
     val posts: LiveData<List<post>>
         get() = _posts
+//    private val dao = DatabaseProvider.getDatabase(application).friendsDao()
+//private val database = DatabaseProvider.getDatabase()
 
-    var videouri = MutableLiveData<Uri>()
-    var username = MutableLiveData<String>()
-    var bio = MutableLiveData<String>()
-    var profileImageUrl = MutableLiveData<String>()
+    // Create a private property for FriendsDao and initialize it in the init block
+//    private val dao = database.friendsDao()
 
-    val friends: MutableLiveData<List<User>> by lazy {
-        MutableLiveData<List<User>>().also {
-            getFriends()
-        }
-    }
+    private val _friends = MutableLiveData<List<User>>()
+    val friends: LiveData<List<User>>
+        get() = _friends
 
-    private fun getFriends() {
-        currentUser?.uid?.let { uid ->
-            db.collection("users").document(uid).collection("friends")
-                .addSnapshotListener { friendSnapshot, e ->
-                    if (e != null) {
-                        Log.w(TAG, "Listen failed.", e)
-                        return@addSnapshotListener
-                    }
-                    val friendIds = friendSnapshot?.documents?.map { it.id }
-                    if (friendIds != null && friendIds.isNotEmpty()) {
-                        db.collection("profiles")
-                            .whereNotEqualTo("id", currentUser.uid)
-                            .whereIn("id", friendIds)
-                            .addSnapshotListener { snapshot, e ->
-                                if (e != null) {
-                                    Log.w(TAG, "Listen failed.", e)
-                                    return@addSnapshotListener
+    fun loadFriends(uid: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            // Fetch the friends from Firestore asynchronously
+            currentUser?.uid?.let { uid ->
+                db.collection("users").document(uid).collection("friends")
+                    .addSnapshotListener { friendSnapshot, error ->
+                        if (error != null) {
+                            Log.w(TAG, "Error getting friends", error)
+                            return@addSnapshotListener
+                        }
+
+                        friendSnapshot?.let {
+                            val friendIds = it.documents.map { doc -> doc.id }
+                            if (friendIds.isNotEmpty()) {
+                                val cachedUserProfiles = mutableListOf<User>()
+
+                                // Look up cached user profiles first
+                                for (friendId in friendIds) {
+                                    userProfileCache[friendId]?.let { cachedUserProfiles.add(it) }
                                 }
-                                val users = mutableListOf<User>()
-                                for (document in snapshot!!) {
-                                    val user = document.toObject(User::class.java)
-                                    users.add(user)
+
+                                // Query Firestore for user profiles that are not cached
+                                val uncachedFriendIds = friendIds.filter { userProfileCache[it] == null }
+                                if (uncachedFriendIds.isNotEmpty()) {
+                                    db.collection("profiles")
+                                        .whereNotEqualTo("id", currentUser.uid)
+                                        .whereIn("id", uncachedFriendIds)
+                                        .get()
+                                        .addOnSuccessListener { snapshot ->
+                                            val users = snapshot.map { document ->
+                                                val user = document.toObject<User>()
+                                                User(user.id, user.name, user.bio, user.imageUrl, false, null)
+                                            }
+
+                                            // Cache the retrieved user profiles
+                                            for (user in users) {
+                                                userProfileCache[user.id] = user
+                                            }
+
+                                            cachedUserProfiles.addAll(users)
+
+                                            viewModelScope.launch(Dispatchers.Main) {
+                                                _friends.value = cachedUserProfiles
+                                            }
+                                        }
+                                        .addOnFailureListener { exception ->
+                                            Log.w(TAG, "Error getting suggested users", exception)
+                                        }
+                                } else {
+                                    viewModelScope.launch(Dispatchers.Main) {
+                                        _friends.value = cachedUserProfiles
+                                    }
                                 }
-                                friends.value = users
                             }
+                        }
                     }
-                }
+            }
         }
     }
 

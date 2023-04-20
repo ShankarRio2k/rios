@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.example.rios.R
+import com.example.rios.databinding.ActivityMainBinding
 import com.example.rios.tabs.settings
 import com.example.rios.tabs.shots
 import com.example.rios.tabs.surf
@@ -17,60 +18,56 @@ import com.example.rios.utils.SharedPrefernceHelper
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
 
 private var mFirebaseAnalytics: FirebaseAnalytics? = null
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private lateinit var pagerAdapter: PagerAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
-        var viewPager: ViewPager = findViewById(R.id.viewpager)
-        var tabLayout: TabLayout = findViewById(R.id.tablayou)
-        val adapter = PagerAdapter(supportFragmentManager)
-        viewPager.adapter = adapter
-        tabLayout.setupWithViewPager(viewPager)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+
+        pagerAdapter = PagerAdapter(supportFragmentManager)
+        binding.viewpager.adapter = pagerAdapter
+        binding.tablayou.setupWithViewPager(binding.viewpager)
 
         // Set the titles for the first three tabs
-        tabLayout.getTabAt(0)?.text = "Talks"
-        tabLayout.getTabAt(1)?.text = "Surf"
-        tabLayout.getTabAt(2)?.text = "Shots"
+        binding.tablayou.getTabAt(0)?.text = "Talks"
+        binding.tablayou.getTabAt(1)?.text = "Surf"
+        binding.tablayou.getTabAt(2)?.text = "Shots"
 
         // Set a custom view for the fourth tab with a smaller icon
-        val tab = tabLayout.getTabAt(3)
+        val tab = binding.tablayou.getTabAt(3)
         tab?.setCustomView(R.layout.settingstab)
+
         val imageView = tab?.view?.findViewById<ImageView>(R.id.tab_icon)
         val user = FirebaseAuth.getInstance().currentUser
 
         val (username, bio, profileImageUrl) = SharedPrefernceHelper(this).getUserDetails()
+
         if (profileImageUrl != null){
-            if (imageView != null) {
-                Glide.with(this)
-                    .load(profileImageUrl)
-                    .placeholder(R.drawable.settings)
-                    .into(imageView)
+            imageView?.let {
+                Picasso.get().load(profileImageUrl).into(it)
             }
         }else {
-// Get the user's photo URI
+            // Get the user's photo URI
             val photoUri = user?.photoUrl
-
-// Load the photo into an ImageView using Glide
-
-            if (imageView != null) {
-                Glide.with(this)
-                    .load(photoUri)
-                    .placeholder(R.drawable.settings)
-                    .into(imageView)
+            // Load the photo into an ImageView using Picasso
+            imageView?.let {
+                Picasso.get().load(photoUri).into(it)
             }
         }
-
-        // Set the icon for the fourth tab
-//        val tabIcon = tab?.customView?.findViewById<CircleImageView>(R.id.tab_icon)
-//
-//        tabIcon?.setImageResource(R.drawable.settings)
     }
 
     private class PagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
@@ -97,22 +94,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    override fun onStart() {
-        super.onStart()
-//        val id = firebaseAuth.currentUser?.uid
-//        val storageRef = FirebaseStorage.getInstance().reference
-//        val imageRef = storageRef.child("profiles/${id}/profilePic")
-//        Glide.with(this)
-//            .load(u)
-//            .placeholder(R.drawable.settings) // Placeholder image while the actual image is loading
-//            .error(R.drawable.senderchat) // Image to display if there is an error loading the actual image
-//            .into(tab_icon)
-        // Get the current user
-
-    }
 }
-
 
 //        /        btnSignOut.setOnClickListener {
 //            firebaseAuth.signOut()

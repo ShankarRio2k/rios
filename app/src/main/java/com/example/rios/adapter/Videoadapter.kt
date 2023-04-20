@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.example.rios.R
 import com.example.rios.model.video
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.video_item.view.*
 
 class Videoadapter(private var videos: List<video>, private val context: Context) : RecyclerView.Adapter<Videoadapter.VideoViewHolder>() {
 

@@ -29,7 +29,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.synthetic.main.activity_setup_prof.*
 import java.util.Random
 import java.util.UUID
 
@@ -44,7 +43,7 @@ class SetupProf : AppCompatActivity() {
     private val imagePickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
-                circularImageView.setImageURI(uri)
+                binding.circularImageView.setImageURI(uri)
                 _imageUri = uri
             }
         }
@@ -132,7 +131,7 @@ class SetupProf : AppCompatActivity() {
 //                    Log.d(TAG, "Profile data saved with ID: ${documentReference.id}")
                     toast("Profile added")
                     progressDialog.dismiss()
-                    progressofsetprof.visibility = View.GONE
+                    binding.progressofsetprof.visibility = View.GONE
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 }

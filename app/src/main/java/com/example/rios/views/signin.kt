@@ -5,31 +5,35 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
 import com.example.rios.R
+import com.example.rios.databinding.ActivitySigninBinding
+import com.example.rios.databinding.FragmentChatBinding
 import com.example.rios.utils.Extensions.toast
 import com.example.rios.utils.FirebaseUtils.firebaseAuth
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_signin.*
 
 class signin : AppCompatActivity() {
     lateinit var signInEmail: String
     lateinit var signInPassword: String
+    private lateinit var binding: ActivitySigninBinding
     lateinit var signInInputsArray: Array<EditText>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_signin)
-        signInInputsArray = arrayOf(etSignInEmail, etSignInPassword)
+        binding = ActivitySigninBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        signInInputsArray = arrayOf(binding.etSignInEmail, binding.etSignInPassword)
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
             return
         }
-        btnCreateAccount2.setOnClickListener {
+        binding.btnCreateAccount2.setOnClickListener {
             startActivity(Intent(this, Createaccount::class.java))
             finish()
         }
-        btnSignIn.setOnClickListener {
+        binding.btnSignIn.setOnClickListener {
             signInUser()
         }
     }
@@ -37,8 +41,8 @@ class signin : AppCompatActivity() {
     private fun notEmpty(): Boolean = signInEmail.isNotEmpty() && signInPassword.isNotEmpty()
 
     private fun signInUser() {
-        signInEmail = etSignInEmail.text.toString().trim()
-        signInPassword = etSignInPassword.text.toString().trim()
+        signInEmail = binding.etSignInEmail.text.toString().trim()
+        signInPassword = binding.etSignInPassword.text.toString().trim()
 
         if (notEmpty()) {
             firebaseAuth.signInWithEmailAndPassword(signInEmail, signInPassword)

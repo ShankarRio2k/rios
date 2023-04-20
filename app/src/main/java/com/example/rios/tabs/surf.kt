@@ -60,7 +60,7 @@ class surf : Fragment() {
         }
 
         // Load the posts from Firestore
-        val friends = currentUser?.uid?.let {
+        currentUser?.uid?.let {
             db.collection("users").document(it)
                 .collection("friends").get(Source.SERVER)
                 .addOnSuccessListener { friendSnapshot ->
@@ -79,13 +79,14 @@ class surf : Fragment() {
                             // Add the new posts to the list
                             for (document in querySnapshot!!) {
                                 val post = document.toObject(post::class.java)
+                                post.likes = post.likes.map { it as Long }.toMutableList()
                                 if (post.userId != user?.uid && (post.userId == user?.uid || friendIds.contains(
                                         post.userId
                                     ))
                                 ) {
                                     if (post.userId == user?.uid) {
                                         post.profileUrl = user.photoUrl.toString()
-                                        post.username = user.displayName
+                                        post.username = user.displayName.toString()
                                     } else {
                                         db.collection("profiles").document(post.userId).get()
                                             .addOnSuccessListener { documentSnapshot ->

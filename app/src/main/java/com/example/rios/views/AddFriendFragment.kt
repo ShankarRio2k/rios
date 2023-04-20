@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rios.R
+import com.example.rios.adapter.UserAdapter
 import com.example.rios.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -26,7 +27,9 @@ class AddFriendFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_add_friend, container, false)
         users = mutableListOf()
-        userAdapter = UserAdapter(requireContext(), users)
+        userAdapter = UserAdapter(requireContext(), users) { user ->
+            // handle user click event here
+        }
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.suggestions)
         recyclerView?.layoutManager = LinearLayoutManager(activity)

@@ -2,11 +2,11 @@ package com.example.rios.views
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_createaccount.*
 import android.os.Bundle
 import android.widget.EditText
 import com.example.rios.R
 import com.example.rios.databinding.ActivityCreateaccountBinding
+import com.example.rios.databinding.ActivitySigninBinding
 import com.example.rios.databinding.FragmentTalksBinding
 import com.example.rios.utils.Extensions.toast
 import com.example.rios.utils.FirebaseUtils.firebaseAuth
@@ -21,14 +21,15 @@ class Createaccount : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_createaccount)
+        binding = ActivityCreateaccountBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        createAccountInputsArray = arrayOf(binding.etEmail, binding.etPassword, binding.etConfirmPassword)
 
-        createAccountInputsArray = arrayOf(etEmail, etPassword, etConfirmPassword)
-        btnCreateAccount.setOnClickListener {
+       binding.btnCreateAccount.setOnClickListener {
             signIn()
         }
 
-        btnSignIn2.setOnClickListener {
+        binding.btnSignIn2.setOnClickListener {
             startActivity(Intent(this, signin::class.java))
             toast("please sign into your account")
             finish()
@@ -46,14 +47,14 @@ class Createaccount : AppCompatActivity() {
         }
     }
 
-    private fun notEmpty(): Boolean = etEmail.text.toString().trim().isNotEmpty() &&
-            etPassword.text.toString().trim().isNotEmpty() &&
-            etConfirmPassword.text.toString().trim().isNotEmpty()
+    private fun notEmpty(): Boolean = binding.etEmail.text.toString().trim().isNotEmpty() &&
+            binding.etPassword.text.toString().trim().isNotEmpty() &&
+            binding.etConfirmPassword.text.toString().trim().isNotEmpty()
 
     private fun identicalPassword(): Boolean {
         var identical = false
         if (notEmpty() &&
-            etPassword.text.toString().trim() == etConfirmPassword.text.toString().trim()
+            binding.etPassword.text.toString().trim() == binding.etConfirmPassword.text.toString().trim()
         ) {
             identical = true
         } else if (!notEmpty()) {
@@ -71,8 +72,8 @@ class Createaccount : AppCompatActivity() {
     private fun signIn() {
         if (identicalPassword()) {
             // identicalPassword() returns true only  when inputs are not empty and passwords are identical
-            userEmail = etEmail.text.toString().trim()
-            userPassword = etPassword.text.toString().trim()
+            userEmail = binding.etEmail.text.toString().trim()
+            userPassword = binding.etPassword.text.toString().trim()
 
             /*create a user*/
             firebaseAuth.createUserWithEmailAndPassword(userEmail, userPassword)

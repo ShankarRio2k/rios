@@ -1,6 +1,5 @@
 plugins {
     id 'com.android.application'
-    id 'kotlin-android-extensions'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
 }
@@ -18,7 +17,6 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -36,6 +34,7 @@ android {
         jvmTarget = '1.8'
     }
 }
+
 dependencies {
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -56,6 +55,15 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 //    implementation 'com.firebaseui:firebase-ui-firestore:8.0.2'
     implementation 'com.firebaseui:firebase-ui-database:8.0.2'
+
+    //room
+    implementation "androidx.room:room-runtime:2.5.1"
+    annotationProcessor "androidx.room:room-compiler:2.5.1"
+
+//    kapt "androidx.room:room-compiler:2.5.1"
+
+    //picaso
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
     // FirebaseUI for Cloud Firestore
     implementation 'com.firebaseui:firebase-ui-firestore:8.0.2'
