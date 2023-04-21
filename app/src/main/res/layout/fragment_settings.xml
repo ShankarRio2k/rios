@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#FAF9F6"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.settings">
+    tools:context=".tabs.settings">
 
     <RelativeLayout
         android:id="@+id/usercontent"
@@ -17,15 +17,15 @@
             android:id="@+id/userprof"
             android:layout_width="90dp"
             android:layout_height="90dp"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="30dp"
-            android:layout_marginEnd="30dp"
+            android:layout_marginEnd="15dp"
             android:layout_marginBottom="30dp" />
         <TextView
             android:id="@+id/username"
             android:text="usern"
             android:layout_toRightOf="@+id/userprof"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="35dp"
             android:textColor="@color/black"
             android:textSize="22sp"
             android:layout_width="wrap_content"
@@ -35,9 +35,9 @@
             android:id="@+id/bio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/userprof"
+            android:layout_toEndOf="@id/userprof"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="65dp"
             android:text="bio"
             android:textColor="@color/black"
             android:textSize="18sp" />
@@ -51,24 +51,27 @@
     android:orientation="horizontal">
 
     <TextView
+        android:id="@+id/follower_count"
         android:text="3k Followers"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:layout_weight="1"
         android:textColor="@color/black"
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
+        android:id="@+id/following_count"
         android:text="300 Following"
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
+        android:id="@+id/post_count"
         android:text="20 Posts"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textColor="@color/black"
         android:gravity="center"
         android:layout_weight="1"

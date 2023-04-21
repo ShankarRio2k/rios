@@ -80,6 +80,10 @@ class Homeviewmodel : ViewModel() {
                                             }
 
                                             cachedUserProfiles.addAll(users)
+                                            // Sort the list based on the last message time
+                                            cachedUserProfiles.sortByDescending { friend ->
+                                                friend.lastMessageTime
+                                            }
 
                                             viewModelScope.launch(Dispatchers.Main) {
                                                 _friends.value = cachedUserProfiles
@@ -89,6 +93,11 @@ class Homeviewmodel : ViewModel() {
                                             Log.w(TAG, "Error getting suggested users", exception)
                                         }
                                 } else {
+                                    // Sort the list based on the last message time
+                                    cachedUserProfiles.sortByDescending { friend ->
+                                        friend.lastMessageTime
+                                    }
+
                                     viewModelScope.launch(Dispatchers.Main) {
                                         _friends.value = cachedUserProfiles
                                     }
@@ -98,7 +107,39 @@ class Homeviewmodel : ViewModel() {
                     }
             }
         }
-    }
+
+
+
+    // Fetch the friend IDs from Firestore asynchronously
+            db.collection("users").document(uid).collection("friends")
+                .addSnapshotListener { querySnapshot, error ->
+                    if (error != null) {
+                        Log.w(TAG, "Error getting friends", error)
+                        return@addSnapshotListener
+                    }
+
+                    querySnapshot?.let {
+                        val friendIdCache = mutableListOf<String>()
+                        for (document in querySnapshot.documents) {
+                            val friendId = document.getString("friend_id") ?: continue
+                            if (!friendIdCache.contains(friendId)) {
+                                friendIdCache.add(friendId)
+                            }
+                        }
+
+                        // Update the friend IDs in the database
+                        db.collection("users").document(uid)
+                            .update("friend_ids", friendIdCache)
+                            .addOnSuccessListener {
+                                Log.d(TAG, "Updated friend IDs for user $uid")
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.w(TAG, "Error updating friend IDs for user $uid", exception)
+                            }
+                    }
+                }
+        }
+
 
     val suggestedUsers: MutableLiveData<List<User>> by lazy {
         MutableLiveData<List<User>>().also {

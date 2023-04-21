@@ -25,7 +25,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_margin="6dp"
-            android:layout_marginLeft="3dp"
+            android:layout_marginStart="3dp"
             android:src="@drawable/back"
             app:tint="@color/grey" />
 
@@ -78,7 +78,6 @@
             android:id="@+id/chatInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:hint="Type a message...">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -101,7 +100,7 @@
             android:clickable="true"
             android:contentDescription="sent"
             android:src="@drawable/sent_btn"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/chatAudioButton"
@@ -111,7 +110,7 @@
             android:clickable="true"
             android:contentDescription="sent"
             android:src="@drawable/communication"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

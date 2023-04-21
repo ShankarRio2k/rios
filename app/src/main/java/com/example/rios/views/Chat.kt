@@ -295,11 +295,7 @@ class Chat() : Fragment() {
 //        }
 
         binding.back.setOnClickListener {
-            val newFragment = talks() // Replace with the fragment you want to load
-            val transaction = requireFragmentManager().beginTransaction()
-            transaction.replace(R.id.inner_container, newFragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
+                requireActivity().supportFragmentManager.popBackStack()
         }
 
         binding.chatSendButton.setOnClickListener {
@@ -320,6 +316,7 @@ class Chat() : Fragment() {
                 )
                 // Send the message to SenderRoom
                 binding.chatInputEditText.text?.clear()
+                newUser.lastMessageTime = currentMessage.currenttime
                 db.collection("chat").document(SenderRoom).collection("messages").add(message)
                     .addOnSuccessListener {
                         // Send the same message to ReceiverRoom

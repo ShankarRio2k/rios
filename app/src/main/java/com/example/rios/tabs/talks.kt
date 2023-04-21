@@ -22,59 +22,55 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 
 class talks : Fragment() {
-    private lateinit var db: FirebaseFirestore
-    private lateinit var userAdapter: UserAdapter
-    private lateinit var suggestedAdapter: SuggestedAdapter
-    private lateinit var users: MutableList<User>
+
     private val talksViewModel: Homeviewmodel by lazy {
         ViewModelProvider(this).get(Homeviewmodel::class.java)
     }
-    private lateinit var suggestedUsers: MutableList<User>
+
     private val auth = FirebaseAuth.getInstance()
     private val currentUser = auth.currentUser
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_talks, container, false)
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        users = mutableListOf()
-        suggestedUsers = mutableListOf()
-        userAdapter = UserAdapter(requireContext(), users) { user ->
+    private val users = mutableListOf<User>()
+    private val suggestedUsers = mutableListOf<User>()
+    private val userAdapter by lazy {
+        UserAdapter(requireContext(), users) { user ->
             val fragment = Chat(user)
-            (context as FragmentActivity).supportFragmentManager.beginTransaction()
+            requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.inner_container, fragment)
                 .addToBackStack(null) // Add the fragment to the back stack
                 .commit()
         }
-
-        suggestedAdapter = SuggestedAdapter(requireContext(), suggestedUsers) { user ->
+    }
+    private val suggestedAdapter by lazy {
+        SuggestedAdapter(requireContext(), suggestedUsers) { user ->
             users.add(user)
             userAdapter.notifyDataSetChanged()
             getSuggestedUsers()
         }
+    }
+
+    private val db = FirebaseFirestore.getInstance().apply {
+        firestoreSettings = FirebaseFirestoreSettings.Builder()
+            .setPersistenceEnabled(true)
+            .build()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = inflater.inflate(R.layout.fragment_talks, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerofuser)
-        recyclerView?.layoutManager = LinearLayoutManager(activity)
-        recyclerView?.adapter = userAdapter
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.adapter = userAdapter
 
         val recyclerViewofSuggestedAdapter =
             view.findViewById<RecyclerView>(R.id.recyclerofsuggesteduser)
-        recyclerViewofSuggestedAdapter?.layoutManager = LinearLayoutManager(activity)
-        recyclerViewofSuggestedAdapter?.adapter = suggestedAdapter
-
-        db = FirebaseFirestore.getInstance()
-        val settings = FirebaseFirestoreSettings.Builder()
-            .setPersistenceEnabled(true)
-            .build()
-        db.firestoreSettings = settings
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+        recyclerViewofSuggestedAdapter.layoutManager = LinearLayoutManager(activity)
+        recyclerViewofSuggestedAdapter.adapter = suggestedAdapter
 
         talksViewModel.friends.observe(viewLifecycleOwner) { friends ->
             users.clear()
@@ -89,16 +85,16 @@ class talks : Fragment() {
     }
 
     private fun getSuggestedUsers() {
-        currentUser?.uid?.let {
+        currentUser?.uid?.let { currentUserId ->
             val friendIds: MutableList<String> = mutableListOf()
-            db.collection("users").document(it).collection("friends")
+            db.collection("users").document(currentUserId).collection("friends")
                 .addSnapshotListener { friendSnapshot, e ->
                     if (e != null) {
                         Log.w(TAG, "Listen failed.", e)
                         return@addSnapshotListener
                     }
                     friendIds.addAll(friendSnapshot?.documents?.map { it.id } ?: listOf())
-                    friendIds.add(currentUser.uid!!)
+                    currentUserId?.let { friendIds.add(it) } // safe-call operator used here
                     db.collection("profiles")
                         .whereNotIn("id", friendIds)
                         .addSnapshotListener { snapshot, e ->
@@ -127,3 +123,4 @@ class talks : Fragment() {
         }
     }
 }
+
