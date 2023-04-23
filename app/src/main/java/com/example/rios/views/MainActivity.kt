@@ -1,6 +1,7 @@
 package com.example.rios.views
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -70,6 +71,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+//    override fun onBackPressed() {
+//        if (supportFragmentManager.backStackEntryCount > 0) {
+//            supportFragmentManager.popBackStack()
+//        } else {
+//            super.onBackPressed()
+//        }
+//    }
+
     private class PagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
         override fun getCount(): Int = 4
@@ -95,6 +104,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
+
 
 //        /        btnSignOut.setOnClickListener {
 //            firebaseAuth.signOut()

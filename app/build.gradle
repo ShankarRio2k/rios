@@ -70,6 +70,12 @@ dependencies {
 
     // FirebaseUI for Firebase Auth
     implementation 'com.firebaseui:firebase-ui-auth:8.0.2'
+    //Google auth
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
+
+
+    implementation "androidx.navigation:navigation-fragment-ktx:2.5.3"
+    implementation "androidx.navigation:navigation-ui-ktx:2.5.3"
 
     implementation 'com.google.android.exoplayer:exoplayer:2.18.5'
 

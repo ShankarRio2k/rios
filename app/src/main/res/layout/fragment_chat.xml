@@ -12,7 +12,7 @@
         android:id="@+id/nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/senderchat"
+        android:background="@color/light_grey_transparent"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@id/chatRecyclerView"

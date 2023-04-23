@@ -12,6 +12,7 @@ data class User(
     var lastMessageTime: String? = null
 
 ) {
+
     constructor() : this("", "", "","",false, null)
 
 }

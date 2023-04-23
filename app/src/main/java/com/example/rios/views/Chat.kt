@@ -2,6 +2,8 @@ package com.example.rios.views
 
 import android.Manifest.permission.RECORD_AUDIO
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.app.Dialog
+import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
@@ -12,6 +14,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.*
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -50,14 +53,26 @@ class Chat() : Fragment() {
     var SenderRoom: String = ""
     var Room: String = ""
 
-    private val imagePickerLauncher =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let {
-                val storageRef = FirebaseStorage.getInstance().reference
-                val db = FirebaseFirestore.getInstance()
+    private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            val storageRef = FirebaseStorage.getInstance().reference
+            val db = FirebaseFirestore.getInstance()
 
-                val imageRef = storageRef.child("images/msgimages")
-                imageRef.putFile(it).addOnSuccessListener {
+            val imageRef = storageRef.child("images/msgimages")
+
+            val progressDialog = Dialog(requireContext())
+            progressDialog.setContentView(R.layout.progress_dialog)
+            progressDialog.setCancelable(false)
+
+            progressDialog.show()
+
+            imageRef.putFile(it)
+                .addOnProgressListener { taskSnapshot ->
+                    val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount).toInt()
+                    progressDialog.findViewById<TextView>(R.id.progressText).text = "Sending pic.. $progress%..."
+                }
+                .addOnSuccessListener {
+                    progressDialog.dismiss()
                     imageRef.downloadUrl.addOnSuccessListener { imageUrl ->
                         val currentMessage = ChatMessage(
                             message = "",
@@ -75,24 +90,31 @@ class Chat() : Fragment() {
                         )
 
                         db.collection("chat").document(SenderRoom).collection("messages")
-                            .add(message).addOnSuccessListener {
+                            .add(message)
+                            .addOnSuccessListener {
                                 // Send the same message to ReceiverRoom
                                 db.collection("chat").document(ReceiverRoom)
-                                    .collection("messages").add(message).addOnSuccessListener {
-
-                                    }.addOnFailureListener {
+                                    .collection("messages")
+                                    .add(message)
+                                    .addOnSuccessListener {
+                                        // Success
+                                    }
+                                    .addOnFailureListener {
                                         Log.e(TAG, "Error sending message to ReceiverRoom", it)
                                     }
-                            }.addOnFailureListener {
+                            }
+                            .addOnFailureListener {
                                 Log.e(TAG, "Error sending message to SenderRoom", it)
                             }
                     }
-                }.addOnFailureListener {
-                    Log.w(ContentValues.TAG, "Error uploading profile picture", it)
-//                    saveProfileDataToFirestore(profileMap)
                 }
-            }
+                .addOnFailureListener {
+                    progressDialog.dismiss()
+                    Log.w(ContentValues.TAG, "Error uploading profile picture", it)
+//                saveProfileDataToFirestore(profileMap)
+                }
         }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?

@@ -4,12 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.service.controls.ControlsProviderService
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rios.R
 import com.example.rios.adapter.postAdapter
@@ -51,6 +54,7 @@ class surf : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         posts = mutableListOf()
         // Initialize the RecyclerView and adapter
+
         binding.postRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         postAdapter = postAdapter(requireContext(), posts)
         binding.postRecyclerView.adapter = postAdapter
@@ -58,6 +62,8 @@ class surf : Fragment() {
             val intent = Intent(activity, PostActivity::class.java)
             startActivity(intent)
         }
+
+        requireActivity().supportFragmentManager.popBackStack()
 
         // Load the posts from Firestore
         currentUser?.uid?.let {
@@ -114,9 +120,10 @@ class surf : Fragment() {
                         }
 
                 }
-
         }
+
     }
+
 
     companion object {
         fun newInstance(title: String): surf {

@@ -1,6 +1,8 @@
 package com.example.rios.tabs
 
 import android.content.ContentValues.TAG
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +19,7 @@ import com.example.rios.model.*
 import com.example.rios.views.Homeviewmodel
 import com.example.rios.adapter.UserAdapter
 import com.example.rios.views.Chat
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -80,7 +83,22 @@ class talks : Fragment() {
 
         if (currentUser != null) {
             talksViewModel.loadFriends(currentUser.uid)
+            checkInternetAndLoadSuggestedUsers()
+        }
+    }
+
+    private fun checkInternetAndLoadSuggestedUsers() {
+        val connectivityManager =
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        if (networkInfo != null && networkInfo.isConnected) {
             getSuggestedUsers()
+        } else {
+            Snackbar.make(
+                requireView(),
+                "No internet connection. Cannot load suggested users.",
+                Snackbar.LENGTH_SHORT
+            ).show()
         }
     }
 
