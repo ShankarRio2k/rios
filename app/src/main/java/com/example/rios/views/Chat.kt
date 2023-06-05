@@ -2,9 +2,12 @@ package com.example.rios.views
 
 import android.Manifest.permission.RECORD_AUDIO
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.app.Activity
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
 import android.net.Uri
@@ -14,6 +17,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.*
+import android.webkit.MimeTypeMap
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -33,7 +37,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import java.io.File
 
 class Chat() : Fragment() {
@@ -41,7 +47,9 @@ class Chat() : Fragment() {
     private lateinit var binding: FragmentChatBinding
     private var isTyping = false
     private var  REQUEST_PERMISSIONS_CODE = 11
+    private var  REQUEST_CODE_FILE = 12
 //    private lateinit var users: MutableList<User>
+    val db = FirebaseFirestore.getInstance()
 
     constructor(user: User) : this() {
         this.newUser = user
@@ -56,7 +64,6 @@ class Chat() : Fragment() {
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             val storageRef = FirebaseStorage.getInstance().reference
-            val db = FirebaseFirestore.getInstance()
 
             val imageRef = storageRef.child("images/msgimages")
 
@@ -79,7 +86,9 @@ class Chat() : Fragment() {
                             currenttime = Timestamp.now().toString(),
                             senderid = currentUserId,
                             room = SenderRoom,
-                            image = imageUrl
+                            image = imageUrl,
+                            documentName = null,
+                            documentUrl = ""
                         )
                         val message = hashMapOf(
                             "message" to currentMessage.message,
@@ -162,12 +171,20 @@ class Chat() : Fragment() {
                         currenttime = doc["currenttime"].toString(),
                         senderid = doc["senderid"].toString(),
                         room = SenderRoom,
+                        documentUrl = null,
+                        documentName = null,
                         image = (if (doc["image"] != null) Uri.parse(doc["image"].toString()) else null)
                     )
                     currentMessages.add(message)
                 }
                 messageAdapter.notifyDataSetChanged()
             }
+
+        binding.sendDoc.setOnClickListener{
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "*/*"
+            startActivityForResult(intent, REQUEST_CODE_FILE)
+        }
 
         binding.chatInputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -328,6 +345,8 @@ class Chat() : Fragment() {
                     currenttime = Timestamp.now().toString(),
                     senderid = currentUserId,
                     room = SenderRoom,
+                    documentUrl = null,
+                    documentName = null,
                     image = null
                 )
                 val message = hashMapOf(
@@ -380,6 +399,51 @@ class Chat() : Fragment() {
             isTyping = s?.isNotBlank() == true
             updateMicAndSendImages()
         }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_FILE && resultCode == Activity.RESULT_OK) {
+            val fileUri = data?.data
+            if (fileUri != null) {
+                uploadFile(fileUri, requireContext())
+            }
+        }
+    }
+
+
+    fun uploadFile(fileUri: Uri, context: Context) {
+        // Check the file type
+        val fileExtension = MimeTypeMap.getSingleton().getExtensionFromMimeType(context.contentResolver.getType(fileUri))
+        if (fileExtension == null) {
+            Log.e(TAG, "Unknown file type")
+            return
+        }
+
+        // Set the file name as the current timestamp
+        val fileName = "${System.currentTimeMillis()}.$fileExtension"
+
+        val storageRef = Firebase.storage.reference.child("document_files/$fileName")
+
+        storageRef.putFile(fileUri)
+            .addOnSuccessListener { taskSnapshot ->
+                // Get the download URL of the uploaded file
+                taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { downloadUrl ->
+                    // Send a chat message containing the download URL and file name to the recipient
+                    val message = hashMapOf(
+                        "message" to null,
+                        "currenttime" to Timestamp.now(),
+                        "senderid" to currentUserId,
+                        "room" to SenderRoom,
+                        "documentUrl" to downloadUrl.toString(),
+                        "documentName" to fileName
+                    )
+                    db.collection("chat").document(Room).collection("messages").add(message)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error uploading file: $exception")
+            }
     }
 
     private fun updateMicAndSendImages() {

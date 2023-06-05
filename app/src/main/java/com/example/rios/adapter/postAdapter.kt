@@ -53,7 +53,6 @@ class postAdapter(
         private val likeButton: ImageView = itemView.findViewById(R.id.post_like_icon)
         private val likesTextView: TextView = itemView.findViewById(R.id.likesTextView)
         private val timestampTextView: TextView = itemView.findViewById(R.id.time)
-
         fun bind(post: post, holder: PostViewHolder) {
             // Load image into postImageView using Glide
             Glide.with(context)
@@ -68,66 +67,37 @@ class postAdapter(
             // Set the username and caption
             usernameTextView.text = post.username
             captionTextView.text = post.caption
-
+            // Set the number of likes
+            // Set the number of likes
             // Set the number of likes
             likesTextView.text = post.likes.size.toString()
 
             // Set the like button image based on whether the current user has liked the post or not
-            if (post.isLiked) {
-                likeButton.setImageResource(R.drawable.heart)
-            } else {
-                likeButton.setImageResource(R.drawable.favorite)
-            }
+            val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+            val isLiked = post.likes.contains(currentUserUid)
+            updateLikeButtonState(isLiked)
 
-            // Set the click listener for the like button
             likeButton.setOnClickListener {
-                // Toggle the like status of the post
-                post.isLiked = !post.isLiked
+                val isCurrentlyLiked = post.likes.contains(currentUserUid)
 
-                // Get the ID of the current user
-                val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-
-                if (post.isLiked) {
-                    currentUserId?.let {
-                        try {
-                            val userId = it.toLong()
-                            post.likes = post.likes.toMutableList().apply { add(userId) }
-                        } catch (e: NumberFormatException) {
-                            Log.e(TAG, "Invalid user id: $it")
-                        }
+                if (isCurrentlyLiked) {
+                    // Remove the current user's like from the post
+                    currentUserUid?.let {
+                        post.likes.remove(it)
                     }
-                    likeButton.setImageResource(R.drawable.heart)
                 } else {
-                    currentUserId?.let {
-                        try {
-                            val userId = it.toLong()
-                            post.likes = post.likes.toMutableList().apply { remove(userId) }
-                        } catch (e: NumberFormatException) {
-                            Log.e(TAG, "Invalid user id: $it")
-                        }
+                    // Add the current user's like to the post
+                    currentUserUid?.let {
+                        post.likes.add(it)
                     }
-                    likeButton.setImageResource(R.drawable.favorite)
                 }
 
-                // Update the like count in Firestore
-                val postRef =
-                    FirebaseFirestore.getInstance().collection("Posts").document(post.postId)
-                postRef.update("likes", post.likes.toList())
-                    .addOnSuccessListener {
-                        Log.d(TAG, "Like count updated successfully in Firestore")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.w(TAG, "Error updating like count in Firestore", e)
-                    }
+                // Update the like button state
+                updateLikeButtonState(!isCurrentlyLiked)
 
                 // Update the number of likes displayed
                 likesTextView.text = post.likes.size.toString()
-
-                // Notify the adapter that the item has changed
-                notifyItemChanged(holder.adapterPosition, post as Any)
             }
-
-            // Set the timestamp text using a SimpleDateFormat
 
             // Set the timestamp text using a SimpleDateFormat
             val timestamp = post.timestamp
@@ -143,7 +113,10 @@ class postAdapter(
                 }
                 timestampTextView.text = timeText
             }
-
+        }
+        private fun updateLikeButtonState(isLiked: Boolean) {
+            val drawableRes = if (isLiked) R.drawable.heart else R.drawable.ic_heart
+            likeButton.setImageResource(drawableRes)
         }
     }
 }

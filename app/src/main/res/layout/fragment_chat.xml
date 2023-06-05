@@ -70,7 +70,17 @@
             android:layout_width="40dp"
             android:layout_height="50dp"
             android:layout_marginTop="5dp"
+            android:visibility="gone"
             android:src="@drawable/photo">
+
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/sendDoc"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/doc">
 
         </ImageView>
 
@@ -101,6 +111,16 @@
             android:contentDescription="sent"
             android:src="@drawable/sent_btn"
             android:visibility="visible" />
+        <ImageView
+            android:id="@+id/chatDocButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="2dp"
+            android:padding="6dp"
+            android:clickable="true"
+            android:contentDescription="sent"
+            android:src="@drawable/sent_btn"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/chatAudioButton"

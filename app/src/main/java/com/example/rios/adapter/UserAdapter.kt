@@ -49,8 +49,6 @@ class UserAdapter(
         storageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
             Picasso.get()
                 .load(downloadUrl)
-                .resize(200, 200)
-                .centerCrop()
                 .placeholder(R.drawable.profilepic)
                 .error(R.drawable.error_profilepic)
                 .into(holder.profileImage)
@@ -58,6 +56,7 @@ class UserAdapter(
             Log.w(TAG, "Error loading image", exception)
             holder.profileImage.setImageResource(R.drawable.profilepic)
         }
+
 
         holder.itemView.setOnClickListener {
             onUserClick(user)

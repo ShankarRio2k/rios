@@ -7,6 +7,8 @@ class ChatMessage(
     var currenttime: String?,
     var senderid: String?,
     var room: String?,// new property for the image
+    var documentUrl: String?,
+    var documentName: String?,
     var image: Uri?
 ) {
 

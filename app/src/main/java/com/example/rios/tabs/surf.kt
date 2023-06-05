@@ -82,7 +82,7 @@ class surf : Fragment() {
                             // Add the new posts to the list
                             for (document in querySnapshot!!) {
                                 val post = document.toObject(post::class.java)
-                                post.likes = post.likes.map { it as Long }.toMutableList()
+                                post.likes = post.likes.map { it.toString() }.toMutableList()
                                 if (post.userId != user?.uid && (post.userId == user?.uid || friendIds.contains(
                                         post.userId
                                     ))

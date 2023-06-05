@@ -23,7 +23,6 @@ class settings : Fragment(R.layout.fragment_settings) {
 
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var firebaseFirestore: FirebaseFirestore
-    val currentUser = firebaseAuth.currentUser
 
     private val settingViewModel: Homeviewmodel by lazy {
         ViewModelProvider(this).get(Homeviewmodel::class.java)
@@ -33,38 +32,33 @@ class settings : Fragment(R.layout.fragment_settings) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSettingsBinding.bind(view)
-        val userId = firebaseAuth.currentUser?.uid.toString()
-
         firebaseFirestore = FirebaseFirestore.getInstance()
         firebaseAuth = FirebaseAuth.getInstance()
+        val currentUser = firebaseAuth.currentUser?.uid.toString()
 
-        val sharedPreferencesHelper = SharedPrefernceHelper(requireContext())
-        val (username, bio, profileImageUrl) = sharedPreferencesHelper.getUserDetails()
-
-        if (username != null && bio != null && profileImageUrl != null) {
-            Glide.with(this).load(profileImageUrl).into(binding.userprof)
-            binding.username.text = username
-            binding.bio.text = bio
-        } else {
+//        val sharedPreferencesHelper = SharedPrefernceHelper(requireContext())
+//        val (username, bio, profileImageUrl) = sharedPreferencesHelper.getUserDetails()
+        val userId = firebaseAuth.currentUser?.uid.toString()
+//
+//        if (username != null && bio != null && profileImageUrl != null) {
+//            Glide.with(this).load(profileImageUrl).into(binding.userprof)
+//            binding.username.text = username
+//            binding.bio.text = bio
+//        } else {
             val userRef = firebaseFirestore.collection("profiles").document(userId)
             userRef.get().addOnSuccessListener { documentSnapshot ->
                 val username = documentSnapshot.getString("name")
                 val bio = documentSnapshot.getString("bio")
-                val profileImageUrl = documentSnapshot.getString("profilePic")
-
+                val profileImageUrl = documentSnapshot.getString("profileUrl")
                 Glide.with(this).load(profileImageUrl).into(binding.userprof)
                 binding.username.text = username
                 binding.bio.text = bio
-
-                sharedPreferencesHelper.saveUserDetails(username!!, bio!!, profileImageUrl!!)
-            }
+//                sharedPreferencesHelper.saveUserDetails(username!!, bio!!, profileImageUrl!!)
+//            }
         }
 
 //        binding.followerCount.text = "$followerCount followers"
 
-
-
-        firebaseFirestore = FirebaseFirestore.getInstance()
 // Get the "following" collection for the current user
         val followingCollection = firebaseFirestore.collection("users").document(userId).collection("friends")
 // Query the collection to get the number of users being followed
@@ -75,23 +69,18 @@ class settings : Fragment(R.layout.fragment_settings) {
         }.addOnFailureListener { exception ->
             // Handle the failure
         }
-
-        val currentUser = firebaseAuth.currentUser
-        if (currentUser != null) {
-            val currentUserId = currentUser.uid
-
-            firebaseFirestore.collection("Posts")
-                .whereEqualTo("userId", currentUserId)
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    val postCount = querySnapshot.size()
-                    // Set the post count in the UI
-                    binding.postCount.text = "$postCount posts"
-                }
-                .addOnFailureListener { exception ->
-                    // Handle the failure
-                }
-        }
+        val currentUserId = currentUser
+        firebaseFirestore.collection("Posts")
+            .whereEqualTo("userId", currentUserId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val postCount = querySnapshot.size()
+                // Set the post count in the UI
+                binding.postCount.text = "$postCount posts"
+            }
+            .addOnFailureListener { exception ->
+                // Handle the failure
+            }
 
     }
 
