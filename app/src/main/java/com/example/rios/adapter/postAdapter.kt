@@ -53,6 +53,8 @@ class postAdapter(
         private val likeButton: ImageView = itemView.findViewById(R.id.post_like_icon)
         private val likesTextView: TextView = itemView.findViewById(R.id.likesTextView)
         private val timestampTextView: TextView = itemView.findViewById(R.id.time)
+        private val commentButton: ImageView = itemView.findViewById(R.id.post_comment_icon)
+
         fun bind(post: post, holder: PostViewHolder) {
             // Load image into postImageView using Glide
             Glide.with(context)
@@ -72,7 +74,7 @@ class postAdapter(
             // Set the number of likes
             likesTextView.text = post.likes.size.toString()
 
-            // Set the like button image based on whether the current user has liked the post or not
+// Set the like button image based on whether the current user has liked the post or not
             val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
             val isLiked = post.likes.contains(currentUserUid)
             updateLikeButtonState(isLiked)
@@ -92,11 +94,43 @@ class postAdapter(
                     }
                 }
 
+                commentButton.setOnClickListener {
+
+                }
+
                 // Update the like button state
                 updateLikeButtonState(!isCurrentlyLiked)
 
                 // Update the number of likes displayed
                 likesTextView.text = post.likes.size.toString()
+
+                // Perform the necessary updates in your Firestore database to reflect the changes
+                val firestore = FirebaseFirestore.getInstance()
+                val postRef = firestore.collection("posts").document(post.postId)
+
+                firestore.runTransaction { transaction ->
+                    val currentPost = transaction.get(postRef).toObject(post::class.java)
+
+                    currentPost?.likes = post.likes
+
+                    transaction.set(postRef, currentPost as Any)
+                    currentPost // Return the updated Post object
+                }.addOnSuccessListener { updatedPost ->
+                    // Transaction success
+                    likesTextView.text = updatedPost.likes.size.toString()
+
+                    post.likes = updatedPost.likes
+                    // Update the like count in Firestore
+                    postRef.update("likes", updatedPost.likes as List<String>)
+                        .addOnSuccessListener {
+                            // Like count updated in Firestore
+                        }
+                        .addOnFailureListener { exception ->
+                            // Failed to update like count in Firestore
+                        }
+                }.addOnFailureListener { exception ->
+                    // Transaction failure
+                }
             }
 
             // Set the timestamp text using a SimpleDateFormat

@@ -66,7 +66,6 @@ class UserAdapter(
     fun updateUsers(newUsers: List<User>) {
         val diffCallback = UserDiffCallback(users, newUsers)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
-
         users = newUsers
         diffResult.dispatchUpdatesTo(this)
     }

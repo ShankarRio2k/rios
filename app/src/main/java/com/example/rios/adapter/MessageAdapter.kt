@@ -97,18 +97,18 @@ class MessageAdapter(val context: Context, val messageList: ArrayList<ChatMessag
             }
         }
     }
+
     override fun getItemViewType(position: Int): Int {
         val currentMessage = messageList[position]
         return when {
             currentMessage.senderid == FirebaseAuth.getInstance().currentUser?.uid && currentMessage.documentUrl != null -> ITEM_DOC_SENT
-            currentMessage.documentUrl != null -> ITEM_DOC_RECEIVE
+            currentMessage.documentUrl != null && currentMessage.senderid != FirebaseAuth.getInstance().currentUser?.uid -> ITEM_DOC_RECEIVE
             currentMessage.senderid == FirebaseAuth.getInstance().currentUser?.uid && currentMessage.image != null -> ITEM_IMAGE_SENT
+            currentMessage.image != null && currentMessage.senderid != FirebaseAuth.getInstance().currentUser?.uid -> ITEM_IMAGE_RECEIVE
             currentMessage.senderid == FirebaseAuth.getInstance().currentUser?.uid -> ITEM_SENT
-            currentMessage.image != null -> ITEM_IMAGE_RECEIVE
             else -> ITEM_RECEIVE
         }
     }
-
 
     override fun getItemCount(): Int {
         return messageList.size

@@ -121,4 +121,19 @@
 
     </androidx.cardview.widget.CardView>
 
+<!--    <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--        android:id="@+id/commentLayout"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content">-->
+<!--    <EditText-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="i think this post is .."-->
+<!--        />-->
+<!--    <Button-->
+<!--        android:text="Post"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"/>-->
+<!--    </androidx.appcompat.widget.LinearLayoutCompat>-->
+
 </LinearLayout>

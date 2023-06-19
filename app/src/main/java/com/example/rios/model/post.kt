@@ -9,7 +9,7 @@ data class post(
     val caption: String,
     val imageUrl: String,
     val timestamp: Timestamp?,
-    var likes: MutableList<String> = mutableListOf(), // Update the type to MutableList<String>
+    var likes: MutableList<String> = mutableListOf(),
     var profileUrl: String?,
     var isLiked: Boolean = false
 ) {

@@ -39,58 +39,53 @@ class settings : Fragment(R.layout.fragment_settings) {
 //        val sharedPreferencesHelper = SharedPrefernceHelper(requireContext())
 //        val (username, bio, profileImageUrl) = sharedPreferencesHelper.getUserDetails()
         val userId = firebaseAuth.currentUser?.uid.toString()
-//
-//        if (username != null && bio != null && profileImageUrl != null) {
-//            Glide.with(this).load(profileImageUrl).into(binding.userprof)
-//            binding.username.text = username
-//            binding.bio.text = bio
-//        } else {
-            val userRef = firebaseFirestore.collection("profiles").document(userId)
-            userRef.get().addOnSuccessListener { documentSnapshot ->
-                val username = documentSnapshot.getString("name")
-                val bio = documentSnapshot.getString("bio")
-                val profileImageUrl = documentSnapshot.getString("profileUrl")
-                Glide.with(this).load(profileImageUrl).into(binding.userprof)
-                binding.username.text = username
-                binding.bio.text = bio
-//                sharedPreferencesHelper.saveUserDetails(username!!, bio!!, profileImageUrl!!)
-//            }
-        }
+
+        val userRef = firebaseFirestore.collection("profiles").document(userId)
+        userRef.get().addOnSuccessListener { documentSnapshot ->
+            val username = documentSnapshot.getString("name")
+            val bio = documentSnapshot.getString("bio")
+            val profileImageUrl = documentSnapshot.getString("profilePic")
+
+            Glide.with(this).load(profileImageUrl).into(binding.userprof)
+            binding.username.text = username
+            binding.bio.text = bio
 
 //        binding.followerCount.text = "$followerCount followers"
 
-// Get the "following" collection for the current user
-        val followingCollection = firebaseFirestore.collection("users").document(userId).collection("friends")
-// Query the collection to get the number of users being followed
-        followingCollection.get().addOnSuccessListener { querySnapshot ->
-            val followingCount = querySnapshot.size()
-            // Set the following count with the word "following" in the UI
-            binding.followingCount.text = "$followingCount following"
-        }.addOnFailureListener { exception ->
-            // Handle the failure
-        }
-        val currentUserId = currentUser
-        firebaseFirestore.collection("Posts")
-            .whereEqualTo("userId", currentUserId)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                val postCount = querySnapshot.size()
-                // Set the post count in the UI
-                binding.postCount.text = "$postCount posts"
-            }
-            .addOnFailureListener { exception ->
+            // Get the "following" collection for the current user
+            val followingCollection =
+                firebaseFirestore.collection("users").document(userId).collection("friends")
+            // Query the collection to get the number of users being followed
+            followingCollection.get().addOnSuccessListener { querySnapshot ->
+                val followingCount = querySnapshot.size()
+                // Set the following count with the word "following" in the UI
+                binding.followingCount.text = "$followingCount following"
+            }.addOnFailureListener { exception ->
                 // Handle the failure
             }
+            val currentUserId = currentUser
+            firebaseFirestore.collection("Posts")
+                .whereEqualTo("userId", currentUserId)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    val postCount = querySnapshot.size()
+                    // Set the post count in the UI
+                    binding.postCount.text = "$postCount posts"
+                }
+                .addOnFailureListener { exception ->
+                    // Handle the failure
+                }
 
-    }
-
-    companion object {
-        fun newInstance(title: String): settings {
-            val fragment = settings()
-            val args = Bundle()
-            args.putString("settings", title)
-            fragment.arguments = args
-            return fragment
         }
     }
-}
+
+        companion object {
+            fun newInstance(title: String): settings {
+                val fragment = settings()
+                val args = Bundle()
+                args.putString("settings", title)
+                fragment.arguments = args
+                return fragment
+            }
+        }
+    }
