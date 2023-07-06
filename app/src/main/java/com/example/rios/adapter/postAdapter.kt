@@ -1,6 +1,10 @@
 package com.example.rios.adapter
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.service.controls.ControlsProviderService.TAG
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +13,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.example.rios.utils.Zoomimage
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -18,6 +25,16 @@ import com.example.rios.utils.Difi
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 
 class postAdapter(
     private val context: Context,
@@ -54,6 +71,7 @@ class postAdapter(
         private val likesTextView: TextView = itemView.findViewById(R.id.likesTextView)
         private val timestampTextView: TextView = itemView.findViewById(R.id.time)
         private val commentButton: ImageView = itemView.findViewById(R.id.post_comment_icon)
+        private val shareButton: ImageView = itemView.findViewById(R.id.post_share_icon)
 
         fun bind(post: post, holder: PostViewHolder) {
             // Load image into postImageView using Glide
@@ -68,9 +86,11 @@ class postAdapter(
 
             // Set the username and caption
             usernameTextView.text = post.username
-            captionTextView.text = post.caption
-            // Set the number of likes
-            // Set the number of likes
+            if (post.caption.isNotEmpty()) {
+                captionTextView.text = post.caption
+            }else{
+                captionTextView.visibility = View.GONE
+            }
             // Set the number of likes
             likesTextView.text = post.likes.size.toString()
 
@@ -78,6 +98,74 @@ class postAdapter(
             val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
             val isLiked = post.likes.contains(currentUserUid)
             updateLikeButtonState(isLiked)
+
+            shareButton.setOnClickListener {
+                val postImageUrl = post.imageUrl
+                val username = post.username
+                val postId = post.postId
+                val shareText = "Posted by $username"
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    val bitmap: Bitmap? = try {
+                        BitmapFactory.decodeStream(URL(postImageUrl).openStream())
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                        null
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        if (bitmap != null) {
+                            val file = File(context?.cacheDir, "$postId.png")
+                            try {
+                                val fileOutputStream = FileOutputStream(file)
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
+                                fileOutputStream.flush()
+                                fileOutputStream.close()
+
+                                val shareIntent = Intent(Intent.ACTION_SEND)
+                                shareIntent.type = "image/png"
+                                val imageUri = FileProvider.getUriForFile(
+                                    context,
+                                    context?.packageName + ".provider",
+                                    file
+                                )
+                                shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri)
+                                shareIntent.putExtra(Intent.EXTRA_TEXT, shareText)
+
+                                context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_to)))
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                                Toast.makeText(context, "Failed to save image", Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            Toast.makeText(context, "Failed to load image", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+
+
+
+//            private fun shareableBitmap(bitmap: Bitmap?): Uri {
+//                val cachePath = File(this, "imageai/")
+//                cachePath.mkdirs()
+//                val tsLong = System.currentTimeMillis() / 1000
+//                val ts = tsLong.toString()
+//
+//                val file = File(cachePath, "ImageAI${ts}.png")
+//                val fileOutputStream: FileOutputStream
+//                try {
+//                    fileOutputStream = FileOutputStream(file)
+//                    bitmap?.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
+//                    fileOutputStream.flush()
+//                    fileOutputStream.close()
+//                } catch (_: FileNotFoundException) {
+//                } catch (_: IOException) {
+//                }
+//                return FileProvider.getUriForFile(
+////                   this, this.applicationContext.packageName + ".provider", file
+//                )
+//            }
 
             likeButton.setOnClickListener {
                 val isCurrentlyLiked = post.likes.contains(currentUserUid)

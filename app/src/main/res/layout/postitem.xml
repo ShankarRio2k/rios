@@ -8,8 +8,8 @@
         android:id="@+id/post_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:cardCornerRadius="8dp"
+        android:layout_margin="2dp"
+        app:cardCornerRadius="10dp"
         app:cardElevation="4dp"
         app:cardUseCompatPadding="true">
 
@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
+                android:scaleType="fitXY"
                 android:src="@drawable/sendic" />
 
             <LinearLayout

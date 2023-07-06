@@ -62,8 +62,8 @@ class SetupProf : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         val firebaseAuth = FirebaseAuth.getInstance()
 
-        val sharedPreferencesHelper = SharedPrefernceHelper(this)
-        val (username, bio, profileImageUrl) = sharedPreferencesHelper.getUserDetails()
+//        val sharedPreferencesHelper = SharedPrefernceHelper(this)
+//        val (username, bio, profileImageUrl) = sharedPreferencesHelper.getUserDetails()
         val userId = FirebaseUtils.firebaseAuth.currentUser?.uid.toString()
 
         binding.saveprofile.setOnClickListener {
@@ -116,12 +116,13 @@ class SetupProf : AppCompatActivity() {
                             firebaseAuth.currentUser?.updateProfile(profileUpdates)
                                 ?.addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
+                                        profileMap["profilePic"] = it.toString()
                                         Log.d(TAG, "User profile updated.")
+                                        saveProfileDataToFirestore(profileMap)
                                     } else {
                                         Log.w(TAG, "Failed to update user profile.", task.exception)
                                     }
                                 }
-                            profileMap["profilePic"] = it.toString()
                         }
                     }
                         .addOnFailureListener {

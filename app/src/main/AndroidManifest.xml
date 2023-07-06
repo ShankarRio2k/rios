@@ -18,6 +18,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Rios"
         tools:targetApi="33">
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <!-- Add the meta-data element for the provider -->
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepath" />
+        </provider>
+
         <activity
             android:name=".views.PostActivity"
             android:exported="false">

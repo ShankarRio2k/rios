@@ -36,15 +36,15 @@ class settings : Fragment(R.layout.fragment_settings) {
         firebaseAuth = FirebaseAuth.getInstance()
         val currentUser = firebaseAuth.currentUser?.uid.toString()
 
-//        val sharedPreferencesHelper = SharedPrefernceHelper(requireContext())
-//        val (username, bio, profileImageUrl) = sharedPreferencesHelper.getUserDetails()
+        val sharedPreferencesHelper = SharedPrefernceHelper(requireContext())
+//        var (username, bio, profileImageUrl) = sharedPreferencesHelper.getUserDetails()
         val userId = firebaseAuth.currentUser?.uid.toString()
 
         val userRef = firebaseFirestore.collection("profiles").document(userId)
         userRef.get().addOnSuccessListener { documentSnapshot ->
-            val username = documentSnapshot.getString("name")
+         val username = documentSnapshot.getString("name")
             val bio = documentSnapshot.getString("bio")
-            val profileImageUrl = documentSnapshot.getString("profilePic")
+         val  profileImageUrl = documentSnapshot.getString("profilePic")
 
             Glide.with(this).load(profileImageUrl).into(binding.userprof)
             binding.username.text = username
